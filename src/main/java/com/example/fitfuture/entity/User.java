@@ -2,7 +2,7 @@ package com.example.fitfuture.entity;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
+//ciao
 @Document(collection = "users")
 public class User {
     @Id
