@@ -35,13 +35,15 @@ public class ExerciseController {
         return ResponseEntity.ok(exerciseService.getAllExercises());
     }
 
-    @GetMapping("/search/nome")
-    public ResponseEntity<List<Exercise>> getExercisesByNome(@RequestParam String nome) {
-        return ResponseEntity.ok(exerciseService.getExercisesByNome(nome));
+    // Endpoint per la ricerca per nome
+    @GetMapping("/nome/{name}")
+    public ResponseEntity<List<Exercise>> getExercisesByNome(@PathVariable String name) {
+        return ResponseEntity.ok(exerciseService.getExercisesByNome(name));
     }
 
-    @GetMapping("/search/gruppoMuscolare")
-    public ResponseEntity<List<Exercise>> getExercisesByGruppoMuscolare(@RequestParam String gruppoMuscolare) {
+    // Endpoint per la ricerca per gruppo muscolare
+    @GetMapping("/gruppo-muscolare/{gruppoMuscolare}")
+    public ResponseEntity<List<Exercise>> getExercisesByGruppoMuscolare(@PathVariable String gruppoMuscolare) {
         return ResponseEntity.ok(exerciseService.getExercisesByGruppoMuscolare(gruppoMuscolare));
     }
 
@@ -54,18 +56,6 @@ public class ExerciseController {
     public ResponseEntity<Void> deleteExercise(@PathVariable String id) {
         exerciseService.deleteExercise(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<List<Exercise>> getExercisesByNome(@RequestParam(required = false) String nome,
-                                                             @RequestParam(required = false) String gruppoMuscolare) {
-        if (nome != null) {
-            return ResponseEntity.ok(exerciseService.getExercisesByNome(nome));
-        } else if (gruppoMuscolare != null) {
-            return ResponseEntity.ok(exerciseService.getExercisesByGruppoMuscolare(gruppoMuscolare));
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
     }
 
     @DeleteMapping("/nome/{name}")

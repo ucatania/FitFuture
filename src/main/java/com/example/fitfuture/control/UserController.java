@@ -1,10 +1,15 @@
 package com.example.fitfuture.control;
 
+import com.example.fitfuture.dto.LoginRequest;
 import com.example.fitfuture.dto.UserDto;
 import com.example.fitfuture.entity.User;
 import com.example.fitfuture.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,15 +18,17 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthenticationManager authenticationManager) {
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
     }
 
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody UserDto userDto) {
-        User user   = new User(userDto.getUsername(), userDto.getPassword(), userDto.getEmail(), userDto.getRole());
+        User user = new User(userDto.getUsername(), userDto.getPassword(), userDto.getEmail(), userDto.getRole());
         return ResponseEntity.ok(userService.createUser(user));
     }
 
@@ -45,5 +52,17 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable String username) {
         userService.deleteUser(username);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+            );
+            return ResponseEntity.ok("Login successful! User: " + authentication.getName());
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(401).body("Login failed: " + e.getMessage());
+        }
     }
 }

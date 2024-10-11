@@ -21,6 +21,13 @@ public class GymSheet {
         this.exerciseIds = exerciseIds;
     }
 
+    public GymSheet(String id, String athleteId, List<String> exerciseIds) {
+        this.id = id;
+        this.athleteId = athleteId;
+        this.exerciseIds = exerciseIds;
+        this.personalTrainerId = null;
+    }
+
     // Getters and Setters
     public String getId() {
         return id;

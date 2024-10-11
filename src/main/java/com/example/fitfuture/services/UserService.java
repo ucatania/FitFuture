@@ -2,13 +2,17 @@ package com.example.fitfuture.services;
 
 import com.example.fitfuture.entity.User;
 import com.example.fitfuture.repository.UserRepository;
+import com.example.fitfuture.security.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -18,6 +22,7 @@ public class UserService {
     }
 
     public User createUser(User user) {
+        user.setPassword(SecurityConfig.encodePassword(user.getPassword())); // Codifica la password
         return userRepository.save(user);
     }
 
@@ -32,13 +37,13 @@ public class UserService {
     public User updateUser(String username, User user) {
         User existingUser = userRepository.findByUsername(username);
         if (existingUser != null) {
-            // Aggiorna solo i campi desiderati
-            existingUser.setPassword(user.getPassword());
+            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                existingUser.setPassword(SecurityConfig.encodePassword(user.getPassword())); // Codifica la password
+            }
             existingUser.setEmail(user.getEmail());
             existingUser.setRole(user.getRole());
             return userRepository.save(existingUser);
         } else {
-            // Gestisci il caso in cui l'utente non esiste
             throw new RuntimeException("User not found with username: " + username);
         }
     }
@@ -48,5 +53,18 @@ public class UserService {
         if (user != null) {
             userRepository.delete(user);
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getUsername())
+                .password(user.getPassword())
+                .roles(user.getRole().name())
+                .build();
     }
 }
