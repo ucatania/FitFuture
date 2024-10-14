@@ -3,6 +3,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import java.util.stream.Collectors;
 
 
 import java.util.Optional;
@@ -85,4 +86,12 @@ public class GymSheetService {
     public void deleteGymSheet(String gymSheetId) {
         gymSheetRepository.deleteById(gymSheetId);
     }
+
+    public List<GymSheet> getGymSheetsForAuthenticatedUser(String authenticatedUserId) {
+        return gymSheetRepository.findAll().stream()
+                .filter(gymSheet -> gymSheet.getAthleteId().equals(authenticatedUserId))
+                .collect(Collectors.toList());
+    }
+
+
 }

@@ -2,6 +2,7 @@ package com.example.fitfuture.services;
 
 import com.example.fitfuture.entity.User;
 import com.example.fitfuture.repository.UserRepository;
+import com.example.fitfuture.security.CustomUserDetails; // Importa la CustomUserDetails
 import com.example.fitfuture.security.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +23,11 @@ public class UserService implements UserDetailsService {
     }
 
     public User createUser(User user) {
+
+        if (userRepository.findByUsername(user.getUsername()) != null) {
+            throw new RuntimeException("Username already exists: " + user.getUsername());
+        }
+
         user.setPassword(SecurityConfig.encodePassword(user.getPassword())); // Codifica la password
         return userRepository.save(user);
     }
@@ -61,10 +67,7 @@ public class UserService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getUsername())
-                .password(user.getPassword())
-                .roles(user.getRole().name())
-                .build();
+        // Crea e restituisci un'istanza di CustomUserDetails
+        return new CustomUserDetails(user);
     }
 }

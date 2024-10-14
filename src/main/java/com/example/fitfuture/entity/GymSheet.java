@@ -28,6 +28,9 @@ public class GymSheet {
         this.personalTrainerId = null;
     }
 
+    public GymSheet() {
+    }
+
     // Getters and Setters
     public String getId() {
         return id;

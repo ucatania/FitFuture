@@ -77,7 +77,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>${spring-boot.version}</version> <!-- Usa la versione definita nelle proprietà -->
+				<version>3.0.5</version> <!-- Usa la versione definita nelle proprietà -->
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

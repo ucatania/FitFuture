@@ -2,8 +2,13 @@ package com.example.fitfuture.control;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import com.example.fitfuture.security.CustomUserDetails;
 
+import java.util.Collection;
 import java.util.List;
 import com.example.fitfuture.services.GymSheetService;
 import com.example.fitfuture.entity.GymSheet;
@@ -27,17 +32,41 @@ public class GymSheetController {
         return ResponseEntity.ok(gymSheets);
     }
 
-    // Endpoint to retrieve gym sheets for a specific athlete
-    @GetMapping("/athlete/{athleteId}")
-    public ResponseEntity<List<GymSheet>> getGymSheetsByAthlete(@PathVariable String athleteId) {
-        List<GymSheet> gymSheets = gymSheetService.getGymSheetsByAthlete(athleteId);
-        return ResponseEntity.ok(gymSheets);
+    // Endpoint to retrieve gym sheets for the logged-in athlete
+    @GetMapping("/athlete")
+    public ResponseEntity<List<GymSheet>> getGymSheetsByAthlete(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        // Assumiamo che l'ID dell'utente sia memorizzato nel nome utente
+        String athleteId = userDetails.getUsername();
+
+        // Controllo del ruolo dell'utente
+        boolean isAthlete = userDetails.getAuthorities()
+                .stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ATLETA"));
+
+        if (!isAthlete) {
+            return ResponseEntity.status(403).body(null); // Forbid access if not athlete
+        } else{
+            // Recupera le schede di allenamento dell'atleta loggato
+            List<GymSheet> gymSheets = gymSheetService.getGymSheetsByAthlete(athleteId);
+            return ResponseEntity.ok(gymSheets);
+        }
     }
 
-    @GetMapping("/trainer/{trainerId}")
-    public ResponseEntity<List<GymSheet>> getGymSheetsByTrainer(@PathVariable String trainerId) {
-        List<GymSheet> gymSheets = gymSheetService.getGymSheetsByTrainer(trainerId);
-        return ResponseEntity.ok(gymSheets);
+    @GetMapping("/trainer")
+    public ResponseEntity<List<GymSheet>> getGymSheetsByTrainer(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        String trainerId = userDetails.getUsername();
+
+        // Controllo del ruolo dell'utente
+        boolean isPT = userDetails.getAuthorities()
+                .stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("PERSONAL_TRAINER"));
+
+        if (!isPT) {
+            return ResponseEntity.status(403).body(null); // Forbid access if not athlete
+        } else {
+            List<GymSheet> gymSheets = gymSheetService.getGymSheetsByTrainer(trainerId);
+            return ResponseEntity.ok(gymSheets);
+        }
     }
 
     // Endpoint to create a new gym sheet
