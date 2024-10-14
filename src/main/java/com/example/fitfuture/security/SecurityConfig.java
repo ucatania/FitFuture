@@ -15,7 +15,7 @@ import com.example.fitfuture.services.UserService;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
+    //prova
     @Autowired
     private UserService userService;
 
