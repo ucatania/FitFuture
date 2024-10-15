@@ -11,7 +11,7 @@ import com.example.fitfuture.security.CustomUserDetails;
 import java.util.Collection;
 import java.util.List;
 import com.example.fitfuture.services.GymSheetService;
-import com.example.fitfuture.entity.GymSheet;
+import com.example.fitfuture.entity.*;
 import com.example.fitfuture.dto.GymSheetDto;
 
 @RestController
@@ -35,8 +35,7 @@ public class GymSheetController {
     // Endpoint to retrieve gym sheets for the logged-in athlete
     @GetMapping("/athlete")
     public ResponseEntity<List<GymSheet>> getGymSheetsByAthlete(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        // Assumiamo che l'ID dell'utente sia memorizzato nel nome utente
-        String athleteId = userDetails.getUsername();
+        String athleteId = userDetails.getId();
 
         // Controllo del ruolo dell'utente
         boolean isAthlete = userDetails.getAuthorities()
@@ -44,9 +43,8 @@ public class GymSheetController {
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ATLETA"));
 
         if (!isAthlete) {
-            return ResponseEntity.status(403).body(null); // Forbid access if not athlete
-        } else{
-            // Recupera le schede di allenamento dell'atleta loggato
+            return ResponseEntity.status(403).body(null); // Accesso negato se non è un atleta
+        } else {
             List<GymSheet> gymSheets = gymSheetService.getGymSheetsByAthlete(athleteId);
             return ResponseEntity.ok(gymSheets);
         }
@@ -54,7 +52,7 @@ public class GymSheetController {
 
     @GetMapping("/trainer")
     public ResponseEntity<List<GymSheet>> getGymSheetsByTrainer(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        String trainerId = userDetails.getUsername();
+        String trainerId = userDetails.getId();
 
         // Controllo del ruolo dell'utente
         boolean isPT = userDetails.getAuthorities()
@@ -62,28 +60,47 @@ public class GymSheetController {
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("PERSONAL_TRAINER"));
 
         if (!isPT) {
-            return ResponseEntity.status(403).body(null); // Forbid access if not athlete
+            return ResponseEntity.status(403).body(null); // Accesso negato se non è un personal trainer
         } else {
             List<GymSheet> gymSheets = gymSheetService.getGymSheetsByTrainer(trainerId);
             return ResponseEntity.ok(gymSheets);
         }
     }
 
-    // Endpoint to create a new gym sheet
+    // Nuovo endpoint per ottenere la lista degli atleti che hanno GymSheet creati da un trainer
+    @GetMapping("/trainer/list-of-athlete")
+    public ResponseEntity<List<String>> getAthleteByTrainer(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        String trainerId = userDetails.getId();
+
+        // Controllo del ruolo dell'utente
+        boolean isPT = userDetails.getAuthorities()
+                .stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("PERSONAL_TRAINER"));
+
+        if (!isPT) {
+            return ResponseEntity.status(403).body(null); // Accesso negato se non è un personal trainer
+        }
+
+        // Recupera la lista degli atleti che hanno GymSheet creati dal trainer
+        List<String> athletes = gymSheetService.getAthletesByTrainerId(trainerId);
+        return ResponseEntity.ok(athletes);
+    }
+
+    // Endpoint per creare una nuova scheda di allenamento
     @PostMapping
     public ResponseEntity<Void> createGymSheet(@RequestBody GymSheetDto gymSheetDto) {
         gymSheetService.addGymSheet(gymSheetDto);
         return ResponseEntity.ok().build();
     }
 
-    // Endpoint to update a gym sheet
+    // Endpoint per aggiornare una scheda di allenamento
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateGymSheet(@PathVariable String id, @RequestBody GymSheetDto gymSheetDto) {
         gymSheetService.updateGymSheet(id, gymSheetDto);
         return ResponseEntity.ok().build();
     }
 
-    // Endpoint to delete a gym sheet
+    // Endpoint per eliminare una scheda di allenamento
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGymSheet(@PathVariable String id) {
         gymSheetService.deleteGymSheet(id);

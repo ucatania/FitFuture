@@ -26,6 +26,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/users/register").permitAll()
                 .requestMatchers("/api/users/login").permitAll()
                 .requestMatchers("/api/users/**").authenticated()
+                .requestMatchers("/api/workouts").authenticated()
                 .anyRequest().permitAll()
                 .and().httpBasic();
         return http.build();

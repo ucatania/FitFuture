@@ -74,7 +74,26 @@ public class GymSheetService {
         return gymSheetRepository.findByPersonalTrainerId(trainerId);
     }
 
-    // Method to update a gym sheet
+    public List<String> getAthletesByTrainerId(String trainerId) {
+        // Ottieni tutte le GymSheet associate al personal trainer
+        List<GymSheet> gymSheets = gymSheetRepository.findByPersonalTrainerId(trainerId);
+
+        // Estrai gli athleteId dalle GymSheet
+        List<String> athleteIds = gymSheets.stream()
+                .map(GymSheet::getAthleteId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        // Trova gli utenti corrispondenti agli athleteId
+        List<User> athletes = userRepository.findByIdIn(athleteIds);
+
+        // Estrai e ritorna gli username degli atleti
+        return athletes.stream()
+                .map(User::getUsername)
+                .collect(Collectors.toList());
+        }
+
+        // Method to update a gym sheet
     public void updateGymSheet(String gymSheetId, GymSheetDto gymSheetDto) {
         GymSheet gymSheet = new GymSheet(gymSheetId, gymSheetDto.getAthleteId(),
                 gymSheetDto.getPersonalTrainerId(),

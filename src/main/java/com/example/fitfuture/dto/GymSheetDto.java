@@ -13,6 +13,9 @@ public class GymSheetDto {
         this.exerciseIds = exerciseIds;
     }
 
+    public GymSheetDto(){
+    }
+
     // Getters and Setters
     public String getAthleteId() {
         return athleteId;
