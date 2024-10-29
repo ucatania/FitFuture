@@ -16,14 +16,19 @@ public class CustomUserDetails implements UserDetails {
     private String password; // Password dell'utente
     private Collection<? extends GrantedAuthority> authorities; // Ruoli/Permessi dell'utente
 
+
     // Costruttore
     public CustomUserDetails(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("User cannot be null");
+        }
         this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
-        // Mappiamo il ruolo dell'utente in un oggetto GrantedAuthority
         this.authorities = List.of(new SimpleGrantedAuthority(user.getRole().name()));
     }
+
+
 
     public String getId() {
         return id;

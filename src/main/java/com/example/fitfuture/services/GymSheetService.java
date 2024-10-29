@@ -29,27 +29,23 @@ public class GymSheetService {
 
         Optional<User> athleteOpt = userRepository.findById(gymSheetDto.getAthleteId());
         if (athleteOpt.isEmpty() || !athleteOpt.get().getRole().equals(User.Role.ATLETA)) {
-            // Se l'atleta non esiste o il suo ruolo non è ATLETA, lancia un'eccezione HTTP 500
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Atleta non trovato o ruolo non valido");
         }
 
-        // 2. Verifica dell'Esistenza degli Esercizi
         List<Exercise> exercises = exerciseRepository.findAllById(gymSheetDto.getExerciseIds());
         if (exercises.size() != gymSheetDto.getExerciseIds().size()) {
             // Se uno o più esercizi non vengono trovati, lancia un'eccezione HTTP 500
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Uno o più esercizi non trovati");
         }
 
-        // 3. Verifica dell'Esistenza del Personal Trainer (se fornito)
         if (gymSheetDto.getPersonalTrainerId() != null) {
             Optional<User> personalTrainerOpt = userRepository.findById(gymSheetDto.getPersonalTrainerId());
             if (personalTrainerOpt.isEmpty() || !personalTrainerOpt.get().getRole().equals(User.Role.PERSONAL_TRAINER)) {
-                // Se il personal trainer PERSONAL_TRAINER, lancia un'eccezione HTTP 500non esiste o il suo ruolo non è
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Personal Trainer non trovato o ruolo non valido");
             }
 
             GymSheet gymSheet = new GymSheet(null, gymSheetDto.getAthleteId(),
-                    gymSheetDto.getPersonalTrainerId(), // Il personalTrainerId può essere opzionale
+                    gymSheetDto.getPersonalTrainerId(),
                     gymSheetDto.getExerciseIds());
             gymSheetRepository.save(gymSheet);
         } else {

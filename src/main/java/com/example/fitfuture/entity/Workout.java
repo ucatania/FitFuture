@@ -3,24 +3,24 @@ package com.example.fitfuture.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Document(collection = "workouts")
 public class Workout {
     @Id
     private String id;
-    private String athleteId; // ID dell'atleta
-    private String gymSheetId; // ID della GymSheet
-    private Date date; // Data dell'allenamento
+    private String athleteId;
+    private String gymSheetId;
+    private String notes;
+    private LocalDate date;
 
-    // Costruttore
-    public Workout(String athleteId, String gymSheetId, Date date) {
+    public Workout(String athleteId, String gymSheetId, LocalDate date, String notes) {
         this.athleteId = athleteId;
         this.gymSheetId = gymSheetId;
         this.date = date;
+        this.notes = notes;
     }
 
-    // Getters e Setters
     public String getId() {
         return id;
     }
@@ -45,11 +45,13 @@ public class Workout {
         this.gymSheetId = gymSheetId;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+    public void setDate(LocalDate date) { this.date = date; }
+
+    public String getNotes() { return notes; }
+
+    public void setNotes(String notes) {this.notes = notes;}
 }

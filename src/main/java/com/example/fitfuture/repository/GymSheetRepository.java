@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface GymSheetRepository extends MongoRepository<GymSheet, String> {
     List<GymSheet> findByAthleteId(String athleteId);
-    List<GymSheet> findByPersonalTrainerId(String trainerId);
+    List<GymSheet> findByPersonalTrainerId(String personalTrainerId);
+    List<GymSheet> findAthleteIdsByPersonalTrainerId(String personalTrainerId);
 }
