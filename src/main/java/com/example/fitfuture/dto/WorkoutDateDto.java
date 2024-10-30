@@ -6,11 +6,13 @@ public class WorkoutDateDto {
     private LocalDate date;
     private String athleteUsername;
 
+    // Costruttore DTO
     public WorkoutDateDto(LocalDate date, String athleteUsername) {
         this.date = date;
         this.athleteUsername = athleteUsername;
     }
 
+    // Getters & Setters
     public LocalDate getDate() {
         return date;
     }

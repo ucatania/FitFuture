@@ -7,7 +7,7 @@ public class GymSheetDto {
     private String personalTrainerId;
     private List<String> exerciseIds;  // List of exercise IDs
 
-    // costruttore DTO
+    // Costruttore DTO
     public GymSheetDto(String athleteId, String personalTrainerId, List<String> exerciseIds) {
         this.athleteId = athleteId;
         this.personalTrainerId = personalTrainerId;
