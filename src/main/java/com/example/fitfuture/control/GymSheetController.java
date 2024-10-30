@@ -25,14 +25,14 @@ public class GymSheetController {
         this.gymSheetService = gymSheetService;
     }
 
-    // Endpoint to retrieve all gym sheets
+    // Endpoint per la raccolta di tutte le GymSheet
     @GetMapping
     public ResponseEntity<List<GymSheet>> getAllGymSheets() {
         List<GymSheet> gymSheets = gymSheetService.getAllGymSheets();
         return ResponseEntity.ok(gymSheets);
     }
 
-    // Endpoint to retrieve gym sheets for the logged-in athlete
+    // Endpoint per la raccolta delle GymSheet dall'atleta loggato
     @GetMapping("/athlete")
     public ResponseEntity<List<GymSheet>> getGymSheetsByAthlete(@AuthenticationPrincipal CustomUserDetails userDetails) {
         String athleteId = userDetails.getId();
@@ -86,21 +86,21 @@ public class GymSheetController {
         return ResponseEntity.ok(athletes);
     }
 
-    // Endpoint per creare una nuova scheda di allenamento
+    // Endpoint per creare una nuova GymSheet
     @PostMapping
     public ResponseEntity<Void> createGymSheet(@RequestBody GymSheetDto gymSheetDto) {
         gymSheetService.addGymSheet(gymSheetDto);
         return ResponseEntity.ok().build();
     }
 
-    // Endpoint per aggiornare una scheda di allenamento
+    // Endpoint per aggiornare una GymSheet
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateGymSheet(@PathVariable String id, @RequestBody GymSheetDto gymSheetDto) {
         gymSheetService.updateGymSheet(id, gymSheetDto);
         return ResponseEntity.ok().build();
     }
 
-    // Endpoint per eliminare una scheda di allenamento
+    // Endpoint per eliminare una GymSheet
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGymSheet(@PathVariable String id) {
         gymSheetService.deleteGymSheet(id);

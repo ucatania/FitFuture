@@ -14,6 +14,7 @@ public class PasswordMigration {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    // Costruttore
     @Autowired
     public PasswordMigration(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
@@ -28,8 +29,8 @@ public class PasswordMigration {
         for (User user : users) {
             String password = user.getPassword();
 
-            // Verifica se la password è già codificata (opzionale)
-            if (!password.startsWith("$2a$")) { // Le password BCrypt iniziano con "$2a$"
+            // Verifica se la password è già codificata
+            if (!password.startsWith("$2a$")) { // Le password codificate iniziano con "$2a$"
                 // Codifica la password con BCrypt
                 String encodedPassword = passwordEncoder.encode(password);
                 user.setPassword(encodedPassword);

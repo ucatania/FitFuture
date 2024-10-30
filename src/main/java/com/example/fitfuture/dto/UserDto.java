@@ -9,7 +9,7 @@ public class UserDto {
     private String email;
     private User.Role role;
 
-    // Costruttori, getters e setters
+    // Costruttori DTO
     public UserDto(String username, String password, String email, User.Role role) {
         this.username = username;
         this.password = password;

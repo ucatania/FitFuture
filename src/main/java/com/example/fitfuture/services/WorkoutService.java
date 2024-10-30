@@ -21,12 +21,15 @@ public class WorkoutService {
     private final GymSheetRepository gymSheetRepository;
 
     @Autowired
+
+    // Costruttore
     public WorkoutService(WorkoutRepository workoutRepository, UserRepository userRepository, GymSheetRepository gymSheetRepository) {
         this.workoutRepository = workoutRepository;
         this.userRepository = userRepository;
         this.gymSheetRepository = gymSheetRepository;
     }
 
+    // Metodo per aggiungere un allenamento
     public void addWorkout(WorkoutDto workoutDto) {
         // Controlla se l'atleta esiste
         Optional<User> athlete = userRepository.findById(workoutDto.getAthleteId());
@@ -51,6 +54,7 @@ public class WorkoutService {
     }
 
 
+    // Getters
     public List<Workout> getAllWorkouts() {
         return workoutRepository.findAll();
     }
@@ -59,6 +63,7 @@ public class WorkoutService {
         return workoutRepository.findByAthleteId(athleteId);
     }
 
+    // Metodo per aggiornare un allenamento
     public void updateWorkout(String id, WorkoutDto workoutDto) {
         Optional<Workout> optionalWorkout = workoutRepository.findById(id);
         if (optionalWorkout.isEmpty()) {
@@ -71,6 +76,7 @@ public class WorkoutService {
         workoutRepository.save(workout);
     }
 
+    // Metodo per cancellare un allenamento
     public void deleteWorkout(String id) {
         Optional<Workout> optionalWorkout = workoutRepository.findById(id);
         if (optionalWorkout.isEmpty()) {
