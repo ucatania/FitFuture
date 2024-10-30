@@ -24,32 +24,28 @@ public class GymSheetService {
         this.exerciseRepository = exerciseRepository;
         this.gymSheetRepository = gymSheetRepository;
     }
-    // Metodo per aggiungere una nuova GymSheet
+    // Method to add a new gym sheet
     public void addGymSheet(GymSheetDto gymSheetDto) {
 
         Optional<User> athleteOpt = userRepository.findById(gymSheetDto.getAthleteId());
         if (athleteOpt.isEmpty() || !athleteOpt.get().getRole().equals(User.Role.ATLETA)) {
-            // Se l'atleta non esiste o il suo ruolo non è ATLETA, lancia un'eccezione HTTP 500
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Atleta non trovato o ruolo non valido");
         }
 
-        // Verifica se gli esercizi esistono
         List<Exercise> exercises = exerciseRepository.findAllById(gymSheetDto.getExerciseIds());
         if (exercises.size() != gymSheetDto.getExerciseIds().size()) {
             // Se uno o più esercizi non vengono trovati, lancia un'eccezione HTTP 500
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Uno o più esercizi non trovati");
         }
 
-        // Verifica dell'esistenza del Personal Trainer (se fornito)
         if (gymSheetDto.getPersonalTrainerId() != null) {
             Optional<User> personalTrainerOpt = userRepository.findById(gymSheetDto.getPersonalTrainerId());
             if (personalTrainerOpt.isEmpty() || !personalTrainerOpt.get().getRole().equals(User.Role.PERSONAL_TRAINER)) {
-                // Se il personal trainer non esiste o il suo ruolo non è PERSONAL_TRAINER, lancia un'eccezione HTTP 500
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Personal Trainer non trovato o ruolo non valido");
             }
 
             GymSheet gymSheet = new GymSheet(null, gymSheetDto.getAthleteId(),
-                    gymSheetDto.getPersonalTrainerId(), // Il personalTrainerId può essere opzionale
+                    gymSheetDto.getPersonalTrainerId(),
                     gymSheetDto.getExerciseIds());
             gymSheetRepository.save(gymSheet);
         } else {
@@ -60,22 +56,20 @@ public class GymSheetService {
 
     }
 
-    // Metodo per recuperare tutte le GymSheet
+    // Method to retrieve all gym sheets
     public List<GymSheet> getAllGymSheets() {
         return gymSheetRepository.findAll();
     }
 
-    // Metodo per recuperare le GymSheet dato l'atleta
+    // Method to retrieve gym sheets for a specific athlete
     public List<GymSheet> getGymSheetsByAthlete(String athleteId) {
         return gymSheetRepository.findByAthleteId(athleteId);
     }
 
-    // Metodo per recuperare le GymSheet dato il Personal Trainer
     public List<GymSheet> getGymSheetsByTrainer(String trainerId) {
         return gymSheetRepository.findByPersonalTrainerId(trainerId);
     }
 
-    // Metodo per recuperare gli atleti associati ad un Personal Trainer
     public List<String> getAthletesByTrainerId(String trainerId) {
         // Ottieni tutte le GymSheet associate al personal trainer
         List<GymSheet> gymSheets = gymSheetRepository.findByPersonalTrainerId(trainerId);
@@ -95,7 +89,7 @@ public class GymSheetService {
                 .collect(Collectors.toList());
         }
 
-        // Metodo per aggiornare una GymSheet
+        // Method to update a gym sheet
     public void updateGymSheet(String gymSheetId, GymSheetDto gymSheetDto) {
         GymSheet gymSheet = new GymSheet(gymSheetId, gymSheetDto.getAthleteId(),
                 gymSheetDto.getPersonalTrainerId(),
@@ -103,7 +97,7 @@ public class GymSheetService {
         gymSheetRepository.save(gymSheet);
     }
 
-    // Metodo per cancellare una GymSheet
+    // Method to delete a gym sheet
     public void deleteGymSheet(String gymSheetId) {
         gymSheetRepository.deleteById(gymSheetId);
     }

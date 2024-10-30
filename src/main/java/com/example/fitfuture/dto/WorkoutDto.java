@@ -1,23 +1,30 @@
 package com.example.fitfuture.dto;
-import java.util.Date;
+
+import java.time.LocalDate;
 
 public class WorkoutDto {
-    private String athleteId; // ID dell'atleta
-    private String gymSheetId; // ID della GymSheet
-    private Date date; // Data dell'allenamento
+    private String athleteId;
+    private String gymSheetId;
+    private LocalDate date;
+    private String notes; // Campo opzionale per le note
 
-    // Costruttore
-    public WorkoutDto(String athleteId, String gymSheetId, Date date) {
+    public WorkoutDto(String athleteId, String gymSheetId, LocalDate date, String notes) {
         this.athleteId = athleteId;
         this.gymSheetId = gymSheetId;
         this.date = date;
+        this.notes = notes;
+    }
+
+    public WorkoutDto(String athleteId, String gymSheetId, LocalDate date) {
+        this.athleteId = athleteId;
+        this.gymSheetId = gymSheetId;
+        this.date = date;
+        this.notes = null;
     }
 
     public WorkoutDto() {
-
     }
 
-    // Getters e Setters
     public String getAthleteId() {
         return athleteId;
     }
@@ -34,11 +41,19 @@ public class WorkoutDto {
         this.gymSheetId = gymSheetId;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }
