@@ -7,6 +7,7 @@ public class GymSheetDto {
     private String personalTrainerId;
     private List<String> exerciseIds;  // List of exercise IDs
 
+    // costruttore DTO
     public GymSheetDto(String athleteId, String personalTrainerId, List<String> exerciseIds) {
         this.athleteId = athleteId;
         this.personalTrainerId = personalTrainerId;
@@ -16,7 +17,7 @@ public class GymSheetDto {
     public GymSheetDto(){
     }
 
-    // Getters and Setters
+    // Getters & Setters
     public String getAthleteId() {
         return athleteId;
     }
