@@ -20,7 +20,6 @@ public class PasswordMigration {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Questo metodo verrà eseguito una sola volta al lancio dell'applicazione
     @PostConstruct
     public void migratePasswords() {
         List<User> users = userRepository.findAll();
@@ -28,12 +27,10 @@ public class PasswordMigration {
         for (User user : users) {
             String password = user.getPassword();
 
-            // Verifica se la password è già codificata (opzionale)
-            if (!password.startsWith("$2a$")) { // Le password BCrypt iniziano con "$2a$"
-                // Codifica la password con BCrypt
+            if (!password.startsWith("$2a$")) {
                 String encodedPassword = passwordEncoder.encode(password);
                 user.setPassword(encodedPassword);
-                userRepository.save(user); // Aggiorna l'utente con la password codificata
+                userRepository.save(user);
             }
         }
     }

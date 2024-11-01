@@ -28,24 +28,20 @@ public class WorkoutService {
     }
 
     public void addWorkout(WorkoutDto workoutDto) {
-        // Verifica l'esistenza dell'atleta
         Optional<User> athlete = userRepository.findById(workoutDto.getAthleteId());
         if (athlete.isEmpty()) {
             throw new RuntimeException("Athlete not found.");
         }
 
-        // Verifica l'esistenza della GymSheet
         Optional<GymSheet> gymSheet = gymSheetRepository.findById(workoutDto.getGymSheetId());
         if (gymSheet.isEmpty()) {
             throw new RuntimeException("GymSheet not found.");
         }
 
-        // Verifica che la GymSheet sia associata all'atleta
         if (!gymSheet.get().getAthleteId().equals(workoutDto.getAthleteId())) {
             throw new RuntimeException("GymSheet is not associated with the logged-in athlete.");
         }
 
-        // Crea un nuovo Workout utilizzando i dati del DTO, incluse le notes se presenti
         Workout workout = new Workout(
                 workoutDto.getAthleteId(),
                 workoutDto.getGymSheetId(),
@@ -74,7 +70,6 @@ public class WorkoutService {
         workout.setDate(workoutDto.getDate());
         workout.setGymSheetId(workoutDto.getGymSheetId());
 
-        // Aggiorna le notes, se presenti
         if (workoutDto.getNotes() != null) {
             workout.setNotes(workoutDto.getNotes());
         }

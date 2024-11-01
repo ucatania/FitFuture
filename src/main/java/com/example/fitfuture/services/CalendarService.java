@@ -58,7 +58,6 @@ public class CalendarService {
         }
     }
 
-    // Cambiato il metodo per includere anche la data odierna
     public List<LocalDate> getPastWorkoutDatesForAthlete(String athleteId) {
         return workoutRepository.findByAthleteIdAndDateLessThanEqual(athleteId, LocalDate.now())
                 .stream()
@@ -66,20 +65,16 @@ public class CalendarService {
                 .collect(Collectors.toList());
     }
 
-    // Metodo aggiornato per il personal trainer
     public List<WorkoutDateDto> getPastWorkoutDatesForTrainer(String personalTrainerId) {
-        // Ottieni gli ID degli atleti associati al personal trainer
         List<GymSheet> gymSheets = gymSheetRepository.findByPersonalTrainerId(personalTrainerId);
         if (gymSheets.isEmpty()) {
             return Collections.emptyList(); // Restituisci lista vuota se non ci sono atleti
         }
 
-        // Estrai gli ID degli atleti dalla lista di GymSheet
         List<String> athleteIds = gymSheets.stream()
                 .map(GymSheet::getAthleteId)
                 .collect(Collectors.toList());
 
-        // Recupera i workout per gli atleti e le date fino ad oggi (inclusa)
         List<Workout> workouts = workoutRepository.findByAthleteIdInAndDateLessThanEqual(athleteIds, LocalDate.now());
 
         return workouts.stream()

@@ -63,7 +63,6 @@ public class ExerciseService {
         }
     }
 
-    // Metodo per eliminare un esercizio per gruppo muscolare
     public void deleteExerciseByGruppoMuscolare(String gruppoMuscolare) {
         List<Exercise> exercises = exerciseRepository.findByGruppoMuscolare(gruppoMuscolare);
         if (!exercises.isEmpty()) {

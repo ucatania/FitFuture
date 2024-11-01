@@ -2,13 +2,10 @@ package com.example.fitfuture.control;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import com.example.fitfuture.security.CustomUserDetails;
 
-import java.util.Collection;
 import java.util.List;
 import com.example.fitfuture.services.GymSheetService;
 import com.example.fitfuture.entity.*;
@@ -37,7 +34,6 @@ public class GymSheetController {
     public ResponseEntity<List<GymSheet>> getGymSheetsByAthlete(@AuthenticationPrincipal CustomUserDetails userDetails) {
         String athleteId = userDetails.getId();
 
-        // Controllo del ruolo dell'utente
         boolean isAthlete = userDetails.getAuthorities()
                 .stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ATLETA"));
@@ -54,7 +50,6 @@ public class GymSheetController {
     public ResponseEntity<List<GymSheet>> getGymSheetsByTrainer(@AuthenticationPrincipal CustomUserDetails userDetails) {
         String trainerId = userDetails.getId();
 
-        // Controllo del ruolo dell'utente
         boolean isPT = userDetails.getAuthorities()
                 .stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("PERSONAL_TRAINER"));
@@ -67,12 +62,10 @@ public class GymSheetController {
         }
     }
 
-    // Nuovo endpoint per ottenere la lista degli atleti che hanno GymSheet creati da un trainer
     @GetMapping("/trainer/list-of-athlete")
     public ResponseEntity<List<String>> getAthleteByTrainer(@AuthenticationPrincipal CustomUserDetails userDetails) {
         String trainerId = userDetails.getId();
 
-        // Controllo del ruolo dell'utente
         boolean isPT = userDetails.getAuthorities()
                 .stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("PERSONAL_TRAINER"));
@@ -81,26 +74,22 @@ public class GymSheetController {
             return ResponseEntity.status(403).body(null); // Accesso negato se non è un personal trainer
         }
 
-        // Recupera la lista degli atleti che hanno GymSheet creati dal trainer
         List<String> athletes = gymSheetService.getAthletesByTrainerId(trainerId);
         return ResponseEntity.ok(athletes);
     }
 
-    // Endpoint per creare una nuova scheda di allenamento
     @PostMapping
     public ResponseEntity<Void> createGymSheet(@RequestBody GymSheetDto gymSheetDto) {
         gymSheetService.addGymSheet(gymSheetDto);
         return ResponseEntity.ok().build();
     }
 
-    // Endpoint per aggiornare una scheda di allenamento
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateGymSheet(@PathVariable String id, @RequestBody GymSheetDto gymSheetDto) {
         gymSheetService.updateGymSheet(id, gymSheetDto);
         return ResponseEntity.ok().build();
     }
 
-    // Endpoint per eliminare una scheda di allenamento
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteGymSheet(@PathVariable String id) {
         gymSheetService.deleteGymSheet(id);

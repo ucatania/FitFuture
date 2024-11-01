@@ -11,7 +11,6 @@ public class Exercise {
     private String nome;
     private String gruppoMuscolare;
 
-    // Costruttori, getters e setters
     public Exercise() {}
 
     public Exercise(String nome, String gruppoMuscolare) {

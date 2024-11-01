@@ -75,7 +75,6 @@ public class UserController {
             User createdUser = userService.createUser(user);
             return ResponseEntity.ok(createdUser);
         } catch (RuntimeException e) {
-            // Restituisce un errore 409 se lo username esiste già
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists: " + userDto.getUsername());
         }
     }
