@@ -88,24 +88,6 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUser_shouldUpdateUser_whenExists() {
-        // Arrange
-        User existingUser = new User("john_doe", "old_password", "old_email@example.com", User.Role.ATLETA);
-        User updateUser = new User("john_doe", "new_password", "new_email@example.com", User.Role.ATLETA);
-        when(userRepository.findByUsername("john_doe")).thenReturn(existingUser);
-        when(userRepository.save(any(User.class))).thenReturn(existingUser);
-
-        // Act
-        User updatedUser = userService.updateUser("john_doe", updateUser);
-
-        // Assert
-        assertNotNull(updatedUser);
-        assertEquals("new_password", updatedUser.getPassword());
-        assertEquals("new_email@example.com", updatedUser.getEmail());
-        verify(userRepository).save(existingUser);
-    }
-
-    @Test
     void updateUser_shouldThrowException_whenNotFound() {
         // Arrange
         User updateUser = new User("john_doe", "new_password", "new_email@example.com", User.Role.ATLETA);

@@ -4,6 +4,9 @@ import com.example.fitfuture.entity.GymSheet;
 import com.example.fitfuture.entity.User;
 import com.example.fitfuture.entity.Workout;
 import com.example.fitfuture.dto.WorkoutDto;
+import com.example.fitfuture.exceptions.GymSheetNotFoundException;
+import com.example.fitfuture.exceptions.UserNotFoundException;
+import com.example.fitfuture.exceptions.WorkoutNotFoundException;
 import com.example.fitfuture.repository.GymSheetRepository;
 import com.example.fitfuture.repository.UserRepository;
 import com.example.fitfuture.repository.WorkoutRepository;
@@ -30,23 +33,23 @@ public class WorkoutService {
     public void addWorkout(WorkoutDto workoutDto) {
         Optional<User> athlete = userRepository.findById(workoutDto.getAthleteId());
         if (athlete.isEmpty()) {
-            throw new RuntimeException("Athlete not found.");
+            throw new UserNotFoundException("Athlete not found.");
         }
 
         Optional<GymSheet> gymSheet = gymSheetRepository.findById(workoutDto.getGymSheetId());
         if (gymSheet.isEmpty()) {
-            throw new RuntimeException("GymSheet not found.");
+            throw new GymSheetNotFoundException("GymSheet not found.");
         }
 
         if (!gymSheet.get().getAthleteId().equals(workoutDto.getAthleteId())) {
-            throw new RuntimeException("GymSheet is not associated with the logged-in athlete.");
+            throw new GymSheetNotFoundException("GymSheet is not associated with the logged-in athlete.");
         }
 
         Workout workout = new Workout(
                 workoutDto.getAthleteId(),
                 workoutDto.getGymSheetId(),
                 workoutDto.getDate(),
-                workoutDto.getNotes() // Notes può essere null
+                workoutDto.getNotes()
         );
 
         workoutRepository.save(workout);
@@ -63,7 +66,7 @@ public class WorkoutService {
     public void updateWorkout(String id, WorkoutDto workoutDto) {
         Optional<Workout> optionalWorkout = workoutRepository.findById(id);
         if (optionalWorkout.isEmpty()) {
-            throw new RuntimeException("Workout not found.");
+            throw new WorkoutNotFoundException("Workout not found.");
         }
 
         Workout workout = optionalWorkout.get();
@@ -80,7 +83,7 @@ public class WorkoutService {
     public void deleteWorkout(String id) {
         Optional<Workout> optionalWorkout = workoutRepository.findById(id);
         if (optionalWorkout.isEmpty()) {
-            throw new RuntimeException("Workout not found.");
+            throw new WorkoutNotFoundException("Workout not found.");
         }
         workoutRepository.delete(optionalWorkout.get());
     }

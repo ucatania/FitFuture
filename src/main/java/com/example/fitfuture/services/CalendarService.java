@@ -5,6 +5,7 @@ import com.example.fitfuture.dto.WorkoutDto;
 import com.example.fitfuture.entity.GymSheet;
 import com.example.fitfuture.entity.User;
 import com.example.fitfuture.entity.Workout;
+import com.example.fitfuture.exceptions.WorkoutNotFoundException;
 import com.example.fitfuture.repository.GymSheetRepository;
 import com.example.fitfuture.repository.UserRepository;
 import com.example.fitfuture.repository.WorkoutRepository;
@@ -45,7 +46,7 @@ public class CalendarService {
             workout.setNotes(workoutDto.getNotes());
             workoutRepository.save(workout);
         } else {
-            throw new RuntimeException("Workout not found or athlete does not match.");
+            throw new WorkoutNotFoundException("Workout not found or athlete does not match.");
         }
     }
 
@@ -54,7 +55,7 @@ public class CalendarService {
         if (optionalWorkout.isPresent() && optionalWorkout.get().getAthleteId().equals(athleteId)) {
             workoutRepository.delete(optionalWorkout.get());
         } else {
-            throw new RuntimeException("Workout not found or athlete does not match.");
+            throw new WorkoutNotFoundException("Workout not found or athlete does not match.");
         }
     }
 

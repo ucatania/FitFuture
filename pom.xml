@@ -17,14 +17,12 @@
 	</properties>
 
 	<dependencies>
-		<!-- Spring Boot Starter for Web -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>3.0.5</version>
 		</dependency>
 
-		<!-- Spring Boot Starter for Data MongoDB -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
@@ -59,7 +57,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<version>3.0.5</version> <!-- Usa la versione definita nelle proprietà -->
+			<version>3.0.5</version>
 			<scope>test</scope>
 		</dependency>
 
