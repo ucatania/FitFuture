@@ -1,5 +1,8 @@
 package com.example.fitfuture.security;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +14,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.fitfuture.services.UserService;
+import org.springframework.security.core.Authentication;
+
+
+import javax.crypto.SecretKey;
+import java.util.Date;
 
 @Configuration
 @EnableWebSecurity
@@ -19,10 +27,12 @@ public class SecurityConfig {
     @Autowired
     private UserService userService;
 
+    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);// Chiave segreta per la firma del token JWT
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .authorizeHttpRequests()
+                .authorizeRequests()
                 .requestMatchers("/api/users/register").permitAll()
                 .requestMatchers("/api/users/login").permitAll()
                 .requestMatchers("/api/users/**").authenticated()
@@ -47,5 +57,18 @@ public class SecurityConfig {
 
     public static String encodePassword(String password) {
         return new BCryptPasswordEncoder().encode(password);
+    }
+
+    /**
+     * Metodo per generare un token JWT.
+     * @param authentication Oggetto contenente le informazioni dell'utente autenticato.
+     * @return Token JWT firmato.
+     */
+    public String generateToken(Authentication authentication) {
+        return Jwts.builder()
+                .setSubject(authentication.getName()) // Nome utente autenticato
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // Scadenza: 1 ora
+                .signWith(SignatureAlgorithm.HS256, secretKey) // Firma del token
+                .compact();
     }
 }

@@ -4,6 +4,7 @@ import com.example.fitfuture.dto.LoginRequest;
 import com.example.fitfuture.dto.UserDto;
 import com.example.fitfuture.entity.User;
 import com.example.fitfuture.services.UserService;
+import com.example.fitfuture.security.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,19 +14,22 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 
-
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
+    private final SecurityConfig securityConfig;
 
     @Autowired
-    public UserController(UserService userService, AuthenticationManager authenticationManager) {
+    public UserController(UserService userService, AuthenticationManager authenticationManager, SecurityConfig securityConfig) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
+        this.securityConfig = securityConfig;
     }
 
     @PostMapping
@@ -57,14 +61,27 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
         try {
+            // Autenticazione dell'utente
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getUsername(),
+                            loginRequest.getPassword()
+                    )
             );
-            return ResponseEntity.ok("Login successful! User: " + authentication.getName());
+
+            // Genera il token JWT usando la classe SecurityConfig
+            String token = securityConfig.generateToken(authentication);
+
+            // Risposta JSON con il token
+            Map<String, String> response = new HashMap<>();
+            response.put("authToken", token);
+            response.put("username", authentication.getName());
+
+            return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(401).body("Login failed: " + e.getMessage());
+            return ResponseEntity.status(401).body(Map.of("error", "Login failed: " + e.getMessage()));
         }
     }
 
@@ -78,7 +95,4 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists: " + userDto.getUsername());
         }
     }
-
 }
-
-
