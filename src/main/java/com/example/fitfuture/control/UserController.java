@@ -95,4 +95,53 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists: " + userDto.getUsername());
         }
     }
+
+    @GetMapping("/{username}/getUsername")
+    public ResponseEntity<String> getUsername(@PathVariable String username) {
+        return ResponseEntity.ok(userService.getUser(username).getUsername());
+    }
+
+    @GetMapping("/{username}/getUserID")
+    public ResponseEntity<String> getUserID(@PathVariable String username) {
+        return ResponseEntity.ok(userService.getUser(username).getId());
+    }
+
+    @GetMapping("/{username}/getEmail")
+    public ResponseEntity<String> getEmail(@PathVariable String username) {
+        return ResponseEntity.ok(userService.getUser(username).getEmail());
+    }
+
+    @GetMapping("/{username}/getRole")
+    public ResponseEntity<String> getRole(@PathVariable String username) {
+        String role = String.valueOf(userService.getUser(username).getRole());
+        if ("ATLETA".equals(role)) {
+            return ResponseEntity.ok("ATLETA");
+        } else if ("PERSONAL_TRAINER".equals(role)) {
+            return ResponseEntity.ok("PERSONAL TRAINER");
+        } else {
+            return ResponseEntity.ok(role);
+        }
+    }
+
+    @PutMapping("/{username}/changeEmail")
+    public ResponseEntity<User> changeEmail(@PathVariable String username, @RequestParam String newEmail) {
+        User user = userService.getUser(username);
+        user.setEmail(newEmail);
+        return ResponseEntity.ok(userService.updateUser(username, user));
+    }
+
+    @PutMapping("/{username}/changeUsername")
+    public ResponseEntity<User> changeUsername(@PathVariable String username, @RequestParam String newUsername) {
+        User user = userService.getUser(username);
+        user.setUsername(newUsername);
+        return ResponseEntity.ok(userService.updateUser(username, user));
+    }
+
+    @PutMapping("/{username}/changePassword")
+    public ResponseEntity<User> changePassword(@PathVariable String username, @RequestParam String newPassword) {
+        User user = userService.getUser(username);
+        user.setPassword(newPassword);
+        return ResponseEntity.ok(userService.updateUser(username, user));
+    }
 }
+
