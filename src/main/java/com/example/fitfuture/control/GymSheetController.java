@@ -106,10 +106,4 @@ public class GymSheetController {
         gymSheetService.deleteGymSheet(id);
         return ResponseEntity.ok().build();
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGymShee(@PathVariable String id) {
-        gymSheetService.deleteGymSheet(id);
-        return ResponseEntity.ok().build();
-    }
 }
