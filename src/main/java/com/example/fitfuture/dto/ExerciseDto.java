@@ -4,12 +4,13 @@ public class ExerciseDto {
     private String nome;
     private String gruppoMuscolare;
 
+    // Costruttore DTO
     public ExerciseDto(String nome, String gruppoMuscolare) {
         this.nome = nome;
         this.gruppoMuscolare = gruppoMuscolare;
     }
 
-    // Getters e Setters
+    // Getters & Setters
     public String getNome() {
         return nome;
     }

@@ -1,8 +1,6 @@
 package com.example.fitfuture.services;
 
 import com.example.fitfuture.entity.User;
-import com.example.fitfuture.exceptions.UserNotFoundException;
-import com.example.fitfuture.exceptions.UsernameAlreadyExistsException;
 import com.example.fitfuture.repository.UserRepository;
 import com.example.fitfuture.security.CustomUserDetails; // Importa la CustomUserDetails
 import com.example.fitfuture.security.SecurityConfig;
@@ -24,16 +22,18 @@ public class UserService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    // Costruttore
     public User createUser(User user) {
 
         if (userRepository.findByUsername(user.getUsername()) != null) {
-            throw new UsernameAlreadyExistsException("Username"+ user.getUsername() +" already exists");
+            throw new RuntimeException("Username already exists: " + user.getUsername());
         }
 
-        user.setPassword(SecurityConfig.encodePassword(user.getPassword()));
+        user.setPassword(SecurityConfig.encodePassword(user.getPassword())); // Codifica la password
         return userRepository.save(user);
     }
 
+    // Getters
     public User getUser(String username) {
         return userRepository.findByUsername(username);
     }
@@ -46,16 +46,17 @@ public class UserService implements UserDetailsService {
         User existingUser = userRepository.findByUsername(username);
         if (existingUser != null) {
             if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-                existingUser.setPassword(SecurityConfig.encodePassword(user.getPassword()));
+                existingUser.setPassword(SecurityConfig.encodePassword(user.getPassword())); // Codifica la password
             }
             existingUser.setEmail(user.getEmail());
             existingUser.setRole(user.getRole());
             return userRepository.save(existingUser);
         } else {
-            throw new UserNotFoundException("User not found with username: " + username);
+            throw new RuntimeException("User not found with username: " + username);
         }
     }
 
+    // Metodo per cancellare un utente
     public void deleteUser(String username) {
         User user = userRepository.findByUsername(username);
         if (user != null) {
@@ -63,6 +64,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    // Metodo per ottenere i parametri di un utente dato il suo username
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);

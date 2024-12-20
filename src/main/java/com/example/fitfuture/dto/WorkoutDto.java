@@ -6,7 +6,7 @@ public class WorkoutDto {
     private String athleteId;
     private String gymSheetId;
     private LocalDate date;
-    private String notes;
+    private String notes; // Campo opzionale per le note
 
     // Costruttori DTO
     public WorkoutDto(String athleteId, String gymSheetId, LocalDate date, String notes) {

@@ -2,7 +2,6 @@ package com.example.fitfuture.services;
 
 import com.example.fitfuture.dto.ExerciseDto;
 import com.example.fitfuture.entity.Exercise;
-import com.example.fitfuture.exceptions.ExerciseNotFoundException;
 import com.example.fitfuture.repository.ExerciseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,7 +46,7 @@ public class ExerciseService {
             existingExercise.setGruppoMuscolare(exerciseDto.getGruppoMuscolare());
             return exerciseRepository.save(existingExercise);
         } else {
-            throw new ExerciseNotFoundException("Exercise not found with id: " + id);
+            throw new RuntimeException("Exercise not found with id: " + id);
         }
     }
 
@@ -60,16 +59,17 @@ public class ExerciseService {
         if (!exercises.isEmpty()) {
             exerciseRepository.deleteAll(exercises);
         } else {
-            throw new ExerciseNotFoundException("No exercises found with name: " + nome);
+            throw new RuntimeException("No exercises found with name: " + nome);
         }
     }
 
+    // Metodo per eliminare un esercizio per gruppo muscolare
     public void deleteExerciseByGruppoMuscolare(String gruppoMuscolare) {
         List<Exercise> exercises = exerciseRepository.findByGruppoMuscolare(gruppoMuscolare);
         if (!exercises.isEmpty()) {
             exerciseRepository.deleteAll(exercises);
         } else {
-            throw new ExerciseNotFoundException("No exercises found with muscle group: " + gruppoMuscolare);
+            throw new RuntimeException("No exercises found with muscle group: " + gruppoMuscolare);
         }
     }
 }
