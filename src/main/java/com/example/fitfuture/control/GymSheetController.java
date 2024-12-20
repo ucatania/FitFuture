@@ -78,7 +78,7 @@ public class GymSheetController {
         return ResponseEntity.ok(athletes);
     }
 
-    @PostMapping
+    @PostMapping("/createGymSheet")
     public ResponseEntity<Void> createGymSheet(@RequestBody GymSheetDto gymSheetDto) {
         gymSheetService.addGymSheet(gymSheetDto);
         return ResponseEntity.ok().build();
