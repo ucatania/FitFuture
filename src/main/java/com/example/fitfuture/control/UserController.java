@@ -124,21 +124,21 @@ public class UserController {
     }
 
     @PutMapping("/{username}/changeEmail")
-    public ResponseEntity<User> changeEmail(@PathVariable String username, @RequestParam String newEmail) {
+    public ResponseEntity<User> changeEmail(@PathVariable String username, @RequestBody String newEmail) {
         User user = userService.getUser(username);
         user.setEmail(newEmail);
         return ResponseEntity.ok(userService.updateUser(username, user));
     }
 
     @PutMapping("/{username}/changeUsername")
-    public ResponseEntity<User> changeUsername(@PathVariable String username, @RequestParam String newUsername) {
+    public ResponseEntity<User> changeUsername(@PathVariable String username, @RequestBody String newUsername) {
         User user = userService.getUser(username);
         user.setUsername(newUsername);
         return ResponseEntity.ok(userService.updateUser(username, user));
     }
 
     @PutMapping("/{username}/changePassword")
-    public ResponseEntity<User> changePassword(@PathVariable String username, @RequestParam String newPassword) {
+    public ResponseEntity<User> changePassword(@PathVariable String username, @RequestBody String newPassword) {
         User user = userService.getUser(username);
         user.setPassword(newPassword);
         return ResponseEntity.ok(userService.updateUser(username, user));

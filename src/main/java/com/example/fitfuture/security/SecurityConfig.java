@@ -27,7 +27,7 @@ public class SecurityConfig {
     @Autowired
     private UserService userService;
 
-    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);// Chiave segreta per la firma del token JWT
+    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -60,16 +60,12 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder().encode(password);
     }
 
-    /**
-     * Metodo per generare un token JWT.
-     * @param authentication Oggetto contenente le informazioni dell'utente autenticato.
-     * @return Token JWT firmato.
-     */
+
     public String generateToken(Authentication authentication) {
         return Jwts.builder()
-                .setSubject(authentication.getName()) // Nome utente autenticato
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // Scadenza: 1 ora
-                .signWith(SignatureAlgorithm.HS256, secretKey) // Firma del token
+                .setSubject(authentication.getName())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 }
