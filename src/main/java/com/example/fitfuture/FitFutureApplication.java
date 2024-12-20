@@ -10,4 +10,5 @@ public class FitFutureApplication {
 		SpringApplication.run(FitFutureApplication.class, args);
 	}
 
+
 }
