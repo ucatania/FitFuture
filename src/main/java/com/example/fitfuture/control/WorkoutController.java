@@ -40,13 +40,9 @@ public class WorkoutController {
 
     @PostMapping
     public ResponseEntity<Void> createWorkout(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody WorkoutDto workoutDto) {
-        try {
-            workoutDto.setAthleteId(userDetails.getId());
-            workoutService.addWorkout(workoutDto);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
+        workoutDto.setAthleteId(userDetails.getId());
+        workoutService.addWorkout(workoutDto);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
