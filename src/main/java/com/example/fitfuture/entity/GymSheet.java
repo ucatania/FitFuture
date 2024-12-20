@@ -4,7 +4,6 @@ import java.util.List;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
 
 @Document(collection = "gymSheets")
 public class GymSheet {
@@ -32,7 +31,6 @@ public class GymSheet {
     public GymSheet() {
     }
 
-    // Getters and Setters
     public String getId() {
         return id;
     }

@@ -9,7 +9,6 @@ public class UserDto {
     private String email;
     private User.Role role;
 
-    // Costruttori DTO
     public UserDto(String username, String password, String email, User.Role role) {
         this.username = username;
         this.password = password;
@@ -20,7 +19,6 @@ public class UserDto {
     public UserDto() {
     }
 
-    // Getters e Setters
     public String getUsername() {
         return username;
     }

@@ -5,6 +5,7 @@ import com.example.fitfuture.dto.WorkoutDto;
 import com.example.fitfuture.entity.GymSheet;
 import com.example.fitfuture.entity.User;
 import com.example.fitfuture.entity.Workout;
+import com.example.fitfuture.exceptions.WorkoutNotFoundException;
 import com.example.fitfuture.repository.GymSheetRepository;
 import com.example.fitfuture.repository.UserRepository;
 import com.example.fitfuture.repository.WorkoutRepository;
@@ -45,7 +46,7 @@ public class CalendarService {
             workout.setNotes(workoutDto.getNotes());
             workoutRepository.save(workout);
         } else {
-            throw new RuntimeException("Workout not found or athlete does not match.");
+            throw new WorkoutNotFoundException("Workout not found or athlete does not match.");
         }
     }
 
@@ -54,11 +55,10 @@ public class CalendarService {
         if (optionalWorkout.isPresent() && optionalWorkout.get().getAthleteId().equals(athleteId)) {
             workoutRepository.delete(optionalWorkout.get());
         } else {
-            throw new RuntimeException("Workout not found or athlete does not match.");
+            throw new WorkoutNotFoundException("Workout not found or athlete does not match.");
         }
     }
 
-    // Cambiato il metodo per includere anche la data odierna
     public List<LocalDate> getPastWorkoutDatesForAthlete(String athleteId) {
         return workoutRepository.findByAthleteIdAndDateLessThanEqual(athleteId, LocalDate.now())
                 .stream()
@@ -66,20 +66,16 @@ public class CalendarService {
                 .collect(Collectors.toList());
     }
 
-    // Metodo aggiornato per il personal trainer
     public List<WorkoutDateDto> getPastWorkoutDatesForTrainer(String personalTrainerId) {
-        // Ottieni gli ID degli atleti associati al personal trainer
         List<GymSheet> gymSheets = gymSheetRepository.findByPersonalTrainerId(personalTrainerId);
         if (gymSheets.isEmpty()) {
             return Collections.emptyList(); // Restituisci lista vuota se non ci sono atleti
         }
 
-        // Estrai gli ID degli atleti dalla lista di GymSheet
         List<String> athleteIds = gymSheets.stream()
                 .map(GymSheet::getAthleteId)
                 .collect(Collectors.toList());
 
-        // Recupera i workout per gli atleti e le date fino ad oggi (inclusa)
         List<Workout> workouts = workoutRepository.findByAthleteIdInAndDateLessThanEqual(athleteIds, LocalDate.now());
 
         return workouts.stream()

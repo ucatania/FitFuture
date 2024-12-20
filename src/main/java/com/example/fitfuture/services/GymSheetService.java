@@ -56,12 +56,12 @@ public class GymSheetService {
 
     }
 
-    // Getter di tutte le GymSheet
+    // Method to retrieve all gym sheets
     public List<GymSheet> getAllGymSheets() {
         return gymSheetRepository.findAll();
     }
 
-    // Getter di tutte le GymSheet di un atleta
+    // Method to retrieve gym sheets for a specific athlete
     public List<GymSheet> getGymSheetsByAthlete(String athleteId) {
         return gymSheetRepository.findByAthleteId(athleteId);
     }
@@ -71,10 +71,10 @@ public class GymSheetService {
     }
 
     public List<String> getAthletesByTrainerId(String trainerId) {
-        // Getter di tutte le GymSheet associate al personal trainer
+        // Ottieni tutte le GymSheet associate al personal trainer
         List<GymSheet> gymSheets = gymSheetRepository.findByPersonalTrainerId(trainerId);
 
-        // Estrae gli athleteId dalle GymSheet
+        // Estrai gli athleteId dalle GymSheet
         List<String> athleteIds = gymSheets.stream()
                 .map(GymSheet::getAthleteId)
                 .distinct()
@@ -83,13 +83,13 @@ public class GymSheetService {
         // Trova gli utenti corrispondenti agli athleteId
         List<User> athletes = userRepository.findByIdIn(athleteIds);
 
-        // Estrae e ritorna gli username degli atleti
+        // Estrai e ritorna gli username degli atleti
         return athletes.stream()
                 .map(User::getUsername)
                 .collect(Collectors.toList());
         }
 
-        // Metodo per aggiornare una GymSheet
+        // Method to update a gym sheet
     public void updateGymSheet(String gymSheetId, GymSheetDto gymSheetDto) {
         GymSheet gymSheet = new GymSheet(gymSheetId, gymSheetDto.getAthleteId(),
                 gymSheetDto.getPersonalTrainerId(),
@@ -97,7 +97,7 @@ public class GymSheetService {
         gymSheetRepository.save(gymSheet);
     }
 
-    // Metodo per cancellare una GymSheet
+    // Method to delete a gym sheet
     public void deleteGymSheet(String gymSheetId) {
         gymSheetRepository.deleteById(gymSheetId);
     }

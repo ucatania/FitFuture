@@ -87,7 +87,7 @@ public class GymSheetController {
     }
 
     // Endpoint per creare una nuova GymSheet
-    @PostMapping ("/createGymSheet")
+    @PostMapping
     public ResponseEntity<Void> createGymSheet(@RequestBody GymSheetDto gymSheetDto) {
         gymSheetService.addGymSheet(gymSheetDto);
         return ResponseEntity.ok().build();
