@@ -11,7 +11,6 @@ public class Exercise {
     private String nome;
     private String gruppoMuscolare;
 
-    // Costruttore
     public Exercise() {}
 
     public Exercise(String nome, String gruppoMuscolare) {
@@ -19,7 +18,6 @@ public class Exercise {
         this.gruppoMuscolare = gruppoMuscolare;
     }
 
-    // Getters & Setters
     public String getId() {
         return id;
     }

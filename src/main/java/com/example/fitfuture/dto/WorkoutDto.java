@@ -6,9 +6,8 @@ public class WorkoutDto {
     private String athleteId;
     private String gymSheetId;
     private LocalDate date;
-    private String notes; // Campo opzionale per le note
+    private String notes;
 
-    // Costruttori DTO
     public WorkoutDto(String athleteId, String gymSheetId, LocalDate date, String notes) {
         this.athleteId = athleteId;
         this.gymSheetId = gymSheetId;
@@ -26,7 +25,6 @@ public class WorkoutDto {
     public WorkoutDto() {
     }
 
-    // Getters & Setters
     public String getAthleteId() {
         return athleteId;
     }

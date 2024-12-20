@@ -16,7 +16,6 @@ public class User {
         ATLETA, PERSONAL_TRAINER
     }
 
-    // Costruttore
     public User(String username, String password, String email, Role role) {
         this.username = username;
         this.password = password;
@@ -24,7 +23,6 @@ public class User {
         this.role = role;
     }
 
-    // Getters e Setters
     public String getId() {
         return id;
     }

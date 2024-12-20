@@ -14,7 +14,6 @@ public class Workout {
     private String notes;
     private LocalDate date;
 
-    // Costruttore
     public Workout(String athleteId, String gymSheetId, LocalDate date, String notes) {
         this.athleteId = athleteId;
         this.gymSheetId = gymSheetId;
@@ -22,7 +21,6 @@ public class Workout {
         this.notes = notes;
     }
 
-    // Getters & Setters
     public String getId() {
         return id;
     }
