@@ -106,7 +106,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser(username).getId());
     }
 
-    @GetMapping("/{username}/getEmail")
+    @GetMapping("/getEmail/changeEmail?username={value}")
     public ResponseEntity<String> getEmail(@PathVariable String username) {
         return ResponseEntity.ok(userService.getUser(username).getEmail());
     }
