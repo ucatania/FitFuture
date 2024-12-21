@@ -71,13 +71,13 @@ public class UserController {
                     )
             );
 
-            // Genera il token JWT usando la classe SecurityConfig
-            String token = securityConfig.generateToken(authentication);
+            // Genera il token Base64
+            String base64Token = securityConfig.generateBase64Token(loginRequest.getUsername(), loginRequest.getPassword());
 
-            // Risposta JSON con il token
+            // Restituisce il token Base64 e lo username
             Map<String, String> response = new HashMap<>();
-            response.put("authToken", token);
             response.put("username", authentication.getName());
+            response.put("base64", base64Token);
 
             return ResponseEntity.ok(response);
         } catch (AuthenticationException e) {
@@ -144,6 +144,3 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(username, user));
     }
 }
-
-
-
