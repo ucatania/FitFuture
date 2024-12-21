@@ -97,22 +97,22 @@ public class UserController {
     }
 
     @GetMapping("/getUsername?username={value}")
-    public ResponseEntity<String> getUsername(@PathVariable String username) {
+    public ResponseEntity<String> getUsername( String username) {
         return ResponseEntity.ok(userService.getUser(username).getUsername());
     }
 
     @GetMapping("/getUserID?username={value}")
-    public ResponseEntity<String> getUserID(@PathVariable String username) {
+    public ResponseEntity<String> getUserID(@RequestParam String username) {
         return ResponseEntity.ok(userService.getUser(username).getId());
     }
 
     @GetMapping("/getEmail?username={value}")
-    public ResponseEntity<String> getEmail(@PathVariable String username) {
+    public ResponseEntity<String> getEmail(@RequestParam String username) {
         return ResponseEntity.ok(userService.getUser(username).getEmail());
     }
 
     @GetMapping("/getRole?username={value}")
-    public ResponseEntity<String> getRole(@PathVariable String username) {
+    public ResponseEntity<String> getRole(@RequestParam String username) {
         String role = String.valueOf(userService.getUser(username).getRole());
         if ("ATLETA".equals(role)) {
             return ResponseEntity.ok("ATLETA");
@@ -124,21 +124,21 @@ public class UserController {
     }
 
     @PutMapping("/changeEmail?username={value}")
-    public ResponseEntity<User> changeEmail(@PathVariable String username, @RequestParam String newEmail) {
+    public ResponseEntity<User> changeEmail(@RequestParam String username, @RequestParam String newEmail) {
         User user = userService.getUser(username);
         user.setEmail(newEmail);
         return ResponseEntity.ok(userService.updateUser(username, user));
     }
 
     @PutMapping("/changeUsername?username={value}")
-    public ResponseEntity<User> changeUsername(@PathVariable String username, @RequestParam String newUsername) {
+    public ResponseEntity<User> changeUsername(@RequestParam String username, @RequestParam String newUsername) {
         User user = userService.getUser(username);
         user.setUsername(newUsername);
         return ResponseEntity.ok(userService.updateUser(username, user));
     }
 
     @PutMapping("/changePassword?username={value}")
-    public ResponseEntity<User> changePassword(@PathVariable String username, @RequestParam String newPassword) {
+    public ResponseEntity<User> changePassword(@RequestParam String username, @RequestParam String newPassword) {
         User user = userService.getUser(username);
         user.setPassword(newPassword);
         return ResponseEntity.ok(userService.updateUser(username, user));
