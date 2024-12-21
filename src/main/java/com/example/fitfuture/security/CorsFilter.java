@@ -20,13 +20,13 @@ public class CorsFilter extends OncePerRequestFilter {
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, PATCH, OPTIONS");
         response.setHeader("Access-Control-Allow-Headers",
                 "Origin, Accept, X-Requested-With, Content-Type, Authorization, Access-Control-Request-Method, Access-Control-Request-Headers");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Credentials", "true"); // Abilita l'accesso alle credenziali
         response.setHeader("Access-Control-Max-Age", "3600"); // Cache degli header preflight per 1 ora
 
         // Gestione delle richieste preflight (OPTIONS)
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
-            return; // Rispondi senza passare al filtro successivo
+            return; // Rispondi subito alla richiesta OPTIONS
         }
 
         // Prosegui con il filtro successivo
