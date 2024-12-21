@@ -51,7 +51,7 @@ public class Workout {
 
     public void setDate(LocalDate date) { this.date = date; }
 
-    public String getNotes() { return notes; }
+    public static String getNotes() { return notes; }
 
     public void setNotes(String notes) {this.notes = notes;}
 }

@@ -123,7 +123,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{username}/changeEmail")
+    @PutMapping("/changeEmail?username={value}")
     public ResponseEntity<User> changeEmail(@PathVariable String username, @RequestParam String newEmail) {
         User user = userService.getUser(username);
         user.setEmail(newEmail);

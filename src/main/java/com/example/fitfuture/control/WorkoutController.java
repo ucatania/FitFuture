@@ -56,4 +56,5 @@ public class WorkoutController {
         workoutService.deleteWorkout(id);
         return ResponseEntity.ok().build();
     }
+
 }
