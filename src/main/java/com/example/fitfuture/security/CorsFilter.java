@@ -23,7 +23,6 @@ public class CorsFilter extends OncePerRequestFilter {
         response.setHeader("Access-Control-Allow-Credentials", "true"); // Abilita l'accesso alle credenziali
         response.setHeader("Access-Control-Max-Age", "3600"); // Cache degli header preflight per 1 ora
 
-        response.setHeader("Vary", "");
 
         // Gestione delle richieste preflight (OPTIONS)
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
