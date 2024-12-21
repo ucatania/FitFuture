@@ -96,22 +96,22 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{username}/getUsername")
+    @GetMapping("/getUsername?username={value}")
     public ResponseEntity<String> getUsername(@PathVariable String username) {
         return ResponseEntity.ok(userService.getUser(username).getUsername());
     }
 
-    @GetMapping("/{username}/getUserID")
+    @GetMapping("/getUserID?username={value}")
     public ResponseEntity<String> getUserID(@PathVariable String username) {
         return ResponseEntity.ok(userService.getUser(username).getId());
     }
 
-    @GetMapping("/getEmail/changeEmail?username={value}")
+    @GetMapping("/getEmail?username={value}")
     public ResponseEntity<String> getEmail(@PathVariable String username) {
         return ResponseEntity.ok(userService.getUser(username).getEmail());
     }
 
-    @GetMapping("/{username}/getRole")
+    @GetMapping("/getRole?username={value}")
     public ResponseEntity<String> getRole(@PathVariable String username) {
         String role = String.valueOf(userService.getUser(username).getRole());
         if ("ATLETA".equals(role)) {
@@ -130,14 +130,14 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(username, user));
     }
 
-    @PutMapping("/{username}/changeUsername")
+    @PutMapping("/changeUsername?username={value}")
     public ResponseEntity<User> changeUsername(@PathVariable String username, @RequestParam String newUsername) {
         User user = userService.getUser(username);
         user.setUsername(newUsername);
         return ResponseEntity.ok(userService.updateUser(username, user));
     }
 
-    @PutMapping("/{username}/changePassword")
+    @PutMapping("/changePassword?username={value}")
     public ResponseEntity<User> changePassword(@PathVariable String username, @RequestParam String newPassword) {
         User user = userService.getUser(username);
         user.setPassword(newPassword);
