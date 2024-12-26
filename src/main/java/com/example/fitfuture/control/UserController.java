@@ -63,7 +63,6 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
         try {
-            // Autenticazione dell'utente
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getUsername(),
@@ -71,10 +70,8 @@ public class UserController {
                     )
             );
 
-            // Genera il token Base64
             String base64Token = securityConfig.generateBase64Token(loginRequest.getUsername(), loginRequest.getPassword());
 
-            // Restituisce il token Base64 e lo username
             Map<String, String> response = new HashMap<>();
             response.put("username", authentication.getName());
             response.put("base64", base64Token);
@@ -96,44 +93,10 @@ public class UserController {
         }
     }
 
-    @GetMapping("/getUsername")
-    public ResponseEntity<String> getUsername(@RequestParam String username) {
-        return ResponseEntity.ok(userService.getUser(username).getUsername());
-    }
-
-    @GetMapping("/getUserID")
-    public ResponseEntity<String> getUserID(@RequestParam String username) {
-        return ResponseEntity.ok(userService.getUser(username).getId());
-    }
-
-    @GetMapping("/getEmail")
-    public ResponseEntity<String> getEmail(@RequestParam String username) {
-        return ResponseEntity.ok(userService.getUser(username).getEmail());
-    }
-
-    @GetMapping("/getRole")
-    public ResponseEntity<String> getRole(@RequestParam String username) {
-        String role = String.valueOf(userService.getUser(username).getRole());
-        if ("ATLETA".equals(role)) {
-            return ResponseEntity.ok("ATLETA");
-        } else if ("PERSONAL_TRAINER".equals(role)) {
-            return ResponseEntity.ok("PERSONAL TRAINER");
-        } else {
-            return ResponseEntity.ok(role);
-        }
-    }
-
     @PutMapping("/changeEmail")
     public ResponseEntity<User> changeEmail(@RequestParam String username, @RequestParam String newEmail) {
         User user = userService.getUser(username);
         user.setEmail(newEmail);
-        return ResponseEntity.ok(userService.updateUser(username, user));
-    }
-
-    @PutMapping("/changeUsername")
-    public ResponseEntity<User> changeUsername(@RequestParam String username, @RequestParam String newUsername) {
-        User user = userService.getUser(username);
-        user.setUsername(newUsername);
         return ResponseEntity.ok(userService.updateUser(username, user));
     }
 
