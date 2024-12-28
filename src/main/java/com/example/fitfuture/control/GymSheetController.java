@@ -78,6 +78,41 @@ public class GymSheetController {
         return ResponseEntity.ok(athletes);
     }
 
+    // Endpoint per ottenere l'ID dell'atleta
+    @GetMapping("/athlete/id")
+    public ResponseEntity<String> getAthleteId(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        String athleteId = userDetails.getId();
+
+        boolean isAthlete = userDetails.getAuthorities()
+                .stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ATLETA"));
+
+        if (!isAthlete) {
+            return ResponseEntity.status(403).body(null); // Accesso negato se non è un atleta
+        }
+
+        return ResponseEntity.ok(athleteId);
+    }
+
+    // Endpoint per ottenere l'ID del personal trainer
+    @GetMapping("/trainer/id")
+    public ResponseEntity<String> getTrainerId(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        String trainerId = userDetails.getId();
+
+        boolean isPT = userDetails.getAuthorities()
+                .stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("PERSONAL_TRAINER"));
+
+        if (!isPT) {
+            return ResponseEntity.status(403).body(null); // Accesso negato se non è un personal trainer
+        }
+
+        return ResponseEntity.ok(trainerId);
+    }
+
+
+
+
     @PostMapping("/createGymSheet")
     public ResponseEntity<Void> createGymSheet(@RequestBody GymSheetDto gymSheetDto) {
         gymSheetService.addGymSheet(gymSheetDto);
