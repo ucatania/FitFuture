@@ -97,7 +97,12 @@ public class GymSheetService {
                 .collect(Collectors.toList());
     }
 
-    
+    public GymSheet getGymSheetById(String gymSheetId) {
+        return gymSheetRepository.findById(gymSheetId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Scheda non trovata."));
+    }
+
+
 
 
 
