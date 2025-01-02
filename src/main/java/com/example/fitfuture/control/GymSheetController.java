@@ -99,6 +99,25 @@ public class GymSheetController {
         return ResponseEntity.ok(gymSheets);
     }
 
+    // Endpoint per ottenere la lista degli atleti associati a un personal trainer
+    @GetMapping("/trainer/list-of-athlete")
+    public ResponseEntity<List<String>> getAthleteByTrainer(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        String trainerId = userDetails.getId();
+
+        boolean isPT = userDetails.getAuthorities()
+                .stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("PERSONAL_TRAINER"));
+
+        if (!isPT) {
+            return ResponseEntity.status(403).body(null); // Accesso negato se non è un personal trainer
+        }
+
+        List<String> athletes = gymSheetService.getAthletesByTrainerId(trainerId);
+        return ResponseEntity.ok(athletes);
+    }
+
+
+
     // Endpoint per creare una nuova scheda
     @PostMapping("/createGymSheet")
     public ResponseEntity<Void> createGymSheet(@RequestBody GymSheetDto gymSheetDto) {
@@ -120,3 +139,4 @@ public class GymSheetController {
         return ResponseEntity.ok().build();
     }
 }
+
