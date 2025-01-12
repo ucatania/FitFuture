@@ -33,6 +33,14 @@ public class CalendarService {
     }
 
     public void addWorkoutToDate(WorkoutDto workoutDto) {
+        // Verifica esistenza dell'utente e della scheda in palestra
+        if (!userRepository.existsById(workoutDto.getAthleteId())) {
+            throw new IllegalArgumentException("Athlete not found.");
+        }
+        if (!gymSheetRepository.existsById(workoutDto.getGymSheetId())) {
+            throw new IllegalArgumentException("GymSheet not found.");
+        }
+
         Workout workout = new Workout(workoutDto.getAthleteId(), workoutDto.getGymSheetId(), workoutDto.getDate(), workoutDto.getNotes());
         workoutRepository.save(workout);
     }
@@ -40,6 +48,11 @@ public class CalendarService {
     public void updateWorkout(String id, WorkoutDto workoutDto) {
         Optional<Workout> optionalWorkout = workoutRepository.findById(id);
         if (optionalWorkout.isPresent() && optionalWorkout.get().getAthleteId().equals(workoutDto.getAthleteId())) {
+            // Verifica esistenza della scheda in palestra
+            if (!gymSheetRepository.existsById(workoutDto.getGymSheetId())) {
+                throw new IllegalArgumentException("GymSheet not found.");
+            }
+
             Workout workout = optionalWorkout.get();
             workout.setDate(workoutDto.getDate());
             workout.setGymSheetId(workoutDto.getGymSheetId());
@@ -60,6 +73,9 @@ public class CalendarService {
     }
 
     public List<LocalDate> getPastWorkoutDatesForAthlete(String athleteId) {
+        if (!userRepository.existsById(athleteId)) {
+            throw new IllegalArgumentException("Athlete not found.");
+        }
         return workoutRepository.findByAthleteIdAndDateLessThanEqual(athleteId, LocalDate.now())
                 .stream()
                 .map(Workout::getDate)
@@ -67,9 +83,13 @@ public class CalendarService {
     }
 
     public List<WorkoutDateDto> getPastWorkoutDatesForTrainer(String personalTrainerId) {
+        if (!userRepository.existsById(personalTrainerId)) {
+            throw new IllegalArgumentException("Personal trainer not found.");
+        }
+
         List<GymSheet> gymSheets = gymSheetRepository.findByPersonalTrainerId(personalTrainerId);
         if (gymSheets.isEmpty()) {
-            return Collections.emptyList(); // Restituisci lista vuota se non ci sono atleti
+            return Collections.emptyList();
         }
 
         List<String> athleteIds = gymSheets.stream()

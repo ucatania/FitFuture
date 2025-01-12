@@ -13,7 +13,6 @@ public class GymSheet {
     private String personalTrainerId;
     private List<String> exerciseIds;
 
-    // Costruttori
     public GymSheet(String id, String athleteId, String personalTrainerId, List<String> exerciseIds) {
         this.id = id;
         this.athleteId = athleteId;

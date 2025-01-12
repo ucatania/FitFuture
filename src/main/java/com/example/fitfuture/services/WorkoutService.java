@@ -31,16 +31,18 @@ public class WorkoutService {
     }
 
     public void addWorkout(WorkoutDto workoutDto) {
-        Optional<User> athlete = userRepository.findById(workoutDto.getAthleteId());
-        if (athlete.isEmpty()) {
+        // Verifica se l'atleta esiste
+        if (!userRepository.existsById(workoutDto.getAthleteId())) {
             throw new UserNotFoundException("Athlete not found.");
         }
 
+        // Verifica se la scheda esiste
         Optional<GymSheet> gymSheet = gymSheetRepository.findById(workoutDto.getGymSheetId());
         if (gymSheet.isEmpty()) {
             throw new GymSheetNotFoundException("GymSheet not found.");
         }
 
+        // Controllo che la scheda sia associata all'atleta corretto
         if (!gymSheet.get().getAthleteId().equals(workoutDto.getAthleteId())) {
             throw new GymSheetNotFoundException("GymSheet is not associated with the logged-in athlete.");
         }
@@ -60,6 +62,10 @@ public class WorkoutService {
     }
 
     public List<Workout> getWorkoutsByAthlete(String athleteId) {
+        // Verifica se l'atleta esiste
+        if (!userRepository.existsById(athleteId)) {
+            throw new UserNotFoundException("Athlete not found.");
+        }
         return workoutRepository.findByAthleteId(athleteId);
     }
 
@@ -67,6 +73,11 @@ public class WorkoutService {
         Optional<Workout> optionalWorkout = workoutRepository.findById(id);
         if (optionalWorkout.isEmpty()) {
             throw new WorkoutNotFoundException("Workout not found.");
+        }
+
+        // Verifica se la scheda esiste
+        if (!gymSheetRepository.existsById(workoutDto.getGymSheetId())) {
+            throw new GymSheetNotFoundException("GymSheet not found.");
         }
 
         Workout workout = optionalWorkout.get();

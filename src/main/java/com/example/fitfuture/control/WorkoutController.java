@@ -51,6 +51,12 @@ public class WorkoutController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/deleteWorkout")
+    public ResponseEntity<Void> deleteWorkout(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam String id) {
+        workoutService.deleteWorkout(id);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteWorkout(@PathVariable String id) {
         workoutService.deleteWorkout(id);

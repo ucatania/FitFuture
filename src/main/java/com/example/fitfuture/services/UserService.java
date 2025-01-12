@@ -52,7 +52,7 @@ public class UserService implements UserDetailsService {
             existingUser.setRole(user.getRole());
             return userRepository.save(existingUser);
         } else {
-            throw new UserNotFoundException("User not found with username: " + username);
+            throw new UserNotFoundException(username);
         }
     }
 

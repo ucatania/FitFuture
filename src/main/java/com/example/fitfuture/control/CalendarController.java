@@ -25,14 +25,14 @@ public class CalendarController {
 
     @PostMapping("/workouts")
     public ResponseEntity<Void> addWorkout(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody WorkoutDto workoutDto) {
-        workoutDto.setAthleteId(userDetails.getId()); // Imposta l'ID dell'atleta dal contesto di sicurezza
+        workoutDto.setAthleteId(userDetails.getId());
         calendarService.addWorkoutToDate(workoutDto);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/workouts/{id}")
     public ResponseEntity<Void> updateWorkout(@PathVariable String id, @RequestBody WorkoutDto workoutDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        workoutDto.setAthleteId(userDetails.getId()); // Imposta l'ID dell'atleta dal contesto di sicurezza
+        workoutDto.setAthleteId(userDetails.getId());
         calendarService.updateWorkout(id, workoutDto);
         return ResponseEntity.ok().build();
     }

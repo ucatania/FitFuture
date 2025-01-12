@@ -112,11 +112,20 @@ public class GymSheetServiceTest {
 
     @Test
     void updateGymSheet_shouldSaveUpdatedGymSheet() {
-        // Arrange
-        GymSheetDto gymSheetDto = new GymSheetDto("athleteId", null, Arrays.asList("exerciseId1", "exerciseId2"));
-        GymSheet gymSheetToUpdate = new GymSheet("gymSheetId", "athleteId", null, Arrays.asList("exerciseId1"));
+        User athlete = new User("athleteId", "Athlete Name", "athlete@mail.com", User.Role.ATLETA);
+        User trainer = new User("ptId", "Trainer Name","trainer@mail.com", User.Role.PERSONAL_TRAINER);
+        List<Exercise> exercises = Arrays.asList(new Exercise("exerciseId1", "Exercise 1"), new Exercise("exerciseId2", "Exercise 2"));
 
-        when(gymSheetRepository.save(any(GymSheet.class))).thenReturn(gymSheetToUpdate);
+
+        GymSheet existingGymSheet = new GymSheet("gymSheetId", "athleteId", "ptId", Arrays.asList("exerciseId1"));
+        GymSheetDto gymSheetDto = new GymSheetDto("athleteId", "ptId", Arrays.asList("exerciseId1", "exerciseId2"));
+
+        // Simulare il comportamento del repository
+        when(gymSheetRepository.findById("gymSheetId")).thenReturn(Optional.of(existingGymSheet));
+        when(gymSheetRepository.save(any(GymSheet.class))).thenReturn(existingGymSheet);
+        when(userRepository.findById("athleteId")).thenReturn(Optional.of(athlete));
+        when(userRepository.findById("ptId")).thenReturn(Optional.of(trainer));
+        when(exerciseRepository.findAllById(gymSheetDto.getExerciseIds())).thenReturn(exercises);
 
         // Act
         gymSheetService.updateGymSheet("gymSheetId", gymSheetDto);
@@ -129,16 +138,23 @@ public class GymSheetServiceTest {
         assertEquals("gymSheetId", updatedGymSheet.getId());
         assertEquals("athleteId", updatedGymSheet.getAthleteId());
         assertEquals(2, updatedGymSheet.getExerciseIds().size());
+        assertEquals(Arrays.asList("exerciseId1", "exerciseId2"), updatedGymSheet.getExerciseIds());
     }
+
 
     @Test
     void deleteGymSheet_shouldCallDeleteById() {
+        // Arrange
+        GymSheet existingGymSheet = new GymSheet("gS", "athleteId", "ptId", Arrays.asList("exerciseId1", "exerciseId3"));
+        when(gymSheetRepository.findById("gS")).thenReturn(Optional.of(existingGymSheet));
+
         // Act
-        gymSheetService.deleteGymSheet("gymSheetId");
+        gymSheetService.deleteGymSheet("gS");
 
         // Assert
-        verify(gymSheetRepository).deleteById("gymSheetId");
+        verify(gymSheetRepository).deleteById("gS");
     }
+
     @Test
     void addGymSheet_shouldSaveGymSheetWithPersonalTrainer_whenValidData() {
         // Arrange
@@ -169,7 +185,9 @@ public class GymSheetServiceTest {
         // Arrange
         GymSheet gymSheet1 = new GymSheet("gymSheetId1", "athleteId", null, Arrays.asList("exerciseId1"));
         GymSheet gymSheet2 = new GymSheet("gymSheetId2", "athleteId", null, Arrays.asList("exerciseId2"));
-
+        User athlete = new User("athleteId", "Athlete Name", "athlete@mail.com", User.Role.ATLETA)
+                ;
+        when(userRepository.findById("athleteId")).thenReturn(Optional.of(athlete));
         when(gymSheetRepository.findByAthleteId("athleteId")).thenReturn(Arrays.asList(gymSheet1, gymSheet2));
 
         // Act
@@ -184,9 +202,11 @@ public class GymSheetServiceTest {
     @Test
     void getGymSheetsByTrainer_shouldReturnGymSheetsForGivenTrainer() {
         // Arrange
-        GymSheet gymSheet1 = new GymSheet("gymSheetId1", "athleteId1", "trainerId", Arrays.asList("exerciseId1"));
-        GymSheet gymSheet2 = new GymSheet("gymSheetId2", "athleteId2", "trainerId", Arrays.asList("exerciseId2"));
+        GymSheet gymSheet1 = new GymSheet("gymSheetId1", "trainerId", "trainerId", Arrays.asList("exerciseId1"));
+        GymSheet gymSheet2 = new GymSheet("gymSheetId2", "trainerId", "trainerId", Arrays.asList("exerciseId2"));
+        User trainer = new User("trainerId", "Athlete Name", "athlete@mail.com", User.Role.PERSONAL_TRAINER);
 
+        when(userRepository.findById("trainerId")).thenReturn(Optional.of(trainer));
         when(gymSheetRepository.findByPersonalTrainerId("trainerId")).thenReturn(Arrays.asList(gymSheet1, gymSheet2));
 
         // Act

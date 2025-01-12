@@ -100,7 +100,7 @@ public class GymSheetController {
     }
 
     // Endpoint per ottenere la lista degli atleti associati a un personal trainer
-    @GetMapping("/trainer/list-of-athlete")
+     @GetMapping("/trainer/list-of-athlete")
     public ResponseEntity<List<String>> getAthleteByTrainer(@AuthenticationPrincipal CustomUserDetails userDetails) {
         String trainerId = userDetails.getId();
 

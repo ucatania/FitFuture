@@ -15,7 +15,6 @@ public class CorsFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
                                     final FilterChain filterChain) throws ServletException, IOException {
-        // Aggiungi gli header CORS
         response.setHeader("Access-Control-Allow-Origin", "*"); // Consente tutte le origini
         response.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, PATCH, OPTIONS");
         response.setHeader("Access-Control-Allow-Headers",
@@ -24,13 +23,11 @@ public class CorsFilter extends OncePerRequestFilter {
         response.setHeader("Access-Control-Max-Age", "3600"); // Cache degli header preflight per 1 ora
 
 
-        // Gestione delle richieste preflight (OPTIONS)
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
             return; // Rispondi subito alla richiesta OPTIONS
         }
 
-        // Prosegui con il filtro successivo
         filterChain.doFilter(request, response);
     }
 }

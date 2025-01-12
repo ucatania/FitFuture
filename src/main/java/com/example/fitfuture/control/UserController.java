@@ -54,12 +54,6 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(username, user));
     }
 
-    @DeleteMapping("/{username}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String username) {
-        userService.deleteUser(username);
-        return ResponseEntity.noContent().build();
-    }
-
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
         try {
@@ -105,5 +99,12 @@ public class UserController {
         User user = userService.getUser(username);
         user.setPassword(newPassword);
         return ResponseEntity.ok(userService.updateUser(username, user));
+    }
+
+    @DeleteMapping("/deleteUser")
+    public ResponseEntity<Void> deleteUser(@RequestParam String username) {
+        User user = userService.getUser(username);
+        userService.deleteUser(username);
+        return ResponseEntity.ok().build();
     }
 }

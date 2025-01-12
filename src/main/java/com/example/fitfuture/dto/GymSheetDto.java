@@ -5,9 +5,8 @@ import java.util.List;
 public class GymSheetDto {
     private String athleteId;
     private String personalTrainerId;
-    private List<String> exerciseIds;  // List of exercise IDs
+    private List<String> exerciseIds;
 
-    // costruttore DTO
     public GymSheetDto(String athleteId, String personalTrainerId, List<String> exerciseIds) {
         this.athleteId = athleteId;
         this.personalTrainerId = personalTrainerId;
@@ -17,7 +16,6 @@ public class GymSheetDto {
     public GymSheetDto(){
     }
 
-    // Getters & Setters
     public String getAthleteId() {
         return athleteId;
     }
