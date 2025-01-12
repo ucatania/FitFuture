@@ -30,15 +30,15 @@ public class CalendarController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/workouts/{id}")
-    public ResponseEntity<Void> updateWorkout(@PathVariable String id, @RequestBody WorkoutDto workoutDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    @PutMapping("/workouts/updateWorkout}")
+    public ResponseEntity<Void> updateWorkout(@RequestParam String id, @RequestBody WorkoutDto workoutDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
         workoutDto.setAthleteId(userDetails.getId());
         calendarService.updateWorkout(id, workoutDto);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/workouts/{id}")
-    public ResponseEntity<Void> deleteWorkout(@PathVariable String id, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    @DeleteMapping("/workouts/deleteWorkout")
+    public ResponseEntity<Void> deleteWorkout(@RequestParam String id, @AuthenticationPrincipal CustomUserDetails userDetails) {
         calendarService.deleteWorkout(id, userDetails.getId());
         return ResponseEntity.ok().build();
     }

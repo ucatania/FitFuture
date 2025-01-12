@@ -40,11 +40,9 @@ class WorkoutServiceTest {
 
     @Test
     void testAddWorkout_Success_WithAuthenticatedUser() {
-        // Dati del WorkoutDto e dell'utente autenticato
         WorkoutDto workoutDto = new WorkoutDto("athlete1", "gymSheet1", LocalDate.now(), "Notes");
         GymSheet gymSheet = new GymSheet("gymSheet1", "athlete1", "trainer1", Arrays.asList("exercise1"));
 
-        // Simulazione di un utente autenticato (Spring Security)
         UserDetails authenticatedUser = org.springframework.security.core.userdetails.User
                 .withUsername("athlete1")
                 .password("password")
@@ -53,14 +51,11 @@ class WorkoutServiceTest {
 
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(authenticatedUser, null));
 
-        // Configurazione dei mock
         when(userRepository.existsById(workoutDto.getAthleteId())).thenReturn(true);
         when(gymSheetRepository.findById(workoutDto.getGymSheetId())).thenReturn(Optional.of(gymSheet));
 
-        // Invoca il servizio
         workoutService.addWorkout(workoutDto);
 
-        // Verifica che il metodo `save` sia stato invocato
         verify(workoutRepository, times(1)).save(any(Workout.class));
     }
 

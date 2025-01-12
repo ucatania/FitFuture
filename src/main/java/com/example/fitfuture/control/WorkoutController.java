@@ -38,27 +38,21 @@ public class WorkoutController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/createWorkout")
     public ResponseEntity<Void> createWorkout(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody WorkoutDto workoutDto) {
         workoutDto.setAthleteId(userDetails.getId());
         workoutService.addWorkout(workoutDto);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateWorkout(@PathVariable String id, @RequestBody WorkoutDto workoutDto) {
+    @PutMapping("/update")
+    public ResponseEntity<Void> updateWorkout(@RequestParam String id, @RequestBody WorkoutDto workoutDto) {
         workoutService.updateWorkout(id, workoutDto);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/deleteWorkout")
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteWorkout(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam String id) {
-        workoutService.deleteWorkout(id);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWorkout(@PathVariable String id) {
         workoutService.deleteWorkout(id);
         return ResponseEntity.ok().build();
     }

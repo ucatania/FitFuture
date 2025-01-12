@@ -38,20 +38,9 @@ public class UserController {
         return ResponseEntity.ok(userService.createUser(user));
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<User> getUser(@PathVariable String username) {
-        return ResponseEntity.ok(userService.getUser(username));
-    }
-
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
-    }
-
-    @PutMapping("/{username}")
-    public ResponseEntity<User> updateUser(@PathVariable String username, @RequestBody UserDto userDto) {
-        User user = new User(username, userDto.getPassword(), userDto.getEmail(), userDto.getRole());
-        return ResponseEntity.ok(userService.updateUser(username, user));
     }
 
     @PostMapping("/login")

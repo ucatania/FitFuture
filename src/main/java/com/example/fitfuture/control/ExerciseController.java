@@ -20,13 +20,13 @@ public class ExerciseController {
         this.exerciseService = exerciseService;
     }
 
-    @PostMapping
+    @PostMapping("/createExercise")
     public ResponseEntity<Exercise> createExercise(@RequestBody ExerciseDto exerciseDto) {
         return ResponseEntity.ok(exerciseService.createExercise(exerciseDto));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Exercise> getExerciseById(@PathVariable String id) {
+    @GetMapping("/id")
+    public ResponseEntity<Exercise> getExerciseById(@RequestParam String id) {
         return ResponseEntity.ok(exerciseService.getExerciseById(id));
     }
 
@@ -36,38 +36,33 @@ public class ExerciseController {
     }
 
     // Endpoint per la ricerca per nome
-    @GetMapping("/nome/{name}")
-    public ResponseEntity<List<Exercise>> getExercisesByNome(@PathVariable String name) {
+    @GetMapping("/nome")
+    public ResponseEntity<List<Exercise>> getExercisesByNome(@RequestParam String name) {
         return ResponseEntity.ok(exerciseService.getExercisesByNome(name));
     }
 
     // Endpoint per la ricerca per gruppo muscolare
-    @GetMapping("/gruppo-muscolare/{gruppoMuscolare}")
-    public ResponseEntity<List<Exercise>> getExercisesByGruppoMuscolare(@PathVariable String gruppoMuscolare) {
+    @GetMapping("/gruppo-muscolare")
+    public ResponseEntity<List<Exercise>> getExercisesByGruppoMuscolare(@RequestParam String gruppoMuscolare) {
         return ResponseEntity.ok(exerciseService.getExercisesByGruppoMuscolare(gruppoMuscolare));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Exercise> updateExercise(@PathVariable String id, @RequestBody ExerciseDto exerciseDto) {
+    @PutMapping("/updateExercise")
+    public ResponseEntity<Exercise> updateExercise(@RequestParam String id, @RequestBody ExerciseDto exerciseDto) {
         return ResponseEntity.ok(exerciseService.updateExercise(id, exerciseDto));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteExercise(@PathVariable String id) {
+    @DeleteMapping("/deleteById")
+    public ResponseEntity<Void> deleteExercise(@RequestParam String id) {
         exerciseService.deleteExercise(id);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/nome/{name}")
-    public ResponseEntity<Void> deleteExerciseByName(@PathVariable String name) {
+    @DeleteMapping("/deleteByName")
+    public ResponseEntity<Void> deleteExerciseByName(@RequestParam String name) {
         exerciseService.deleteExerciseByNome(name);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/gruppo-muscolare/{gruppoMuscolare}")
-    public ResponseEntity<Void> deleteExerciseByMuscleGroup(@PathVariable String gruppoMuscolare) {
-        exerciseService.deleteExerciseByGruppoMuscolare(gruppoMuscolare);
-        return ResponseEntity.noContent().build();
-    }
 }
 

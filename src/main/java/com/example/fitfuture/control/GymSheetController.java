@@ -126,15 +126,15 @@ public class GymSheetController {
     }
 
     // Endpoint per aggiornare una scheda
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateGymSheet(@PathVariable String id, @RequestBody GymSheetDto gymSheetDto) {
+    @PutMapping("/update")
+    public ResponseEntity<Void> updateGymSheet(@RequestParam String id, @RequestBody GymSheetDto gymSheetDto) {
         gymSheetService.updateGymSheet(id, gymSheetDto);
         return ResponseEntity.ok().build();
     }
 
     // Endpoint per eliminare una scheda
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteGymSheet(@PathVariable String id) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteGymSheet(@RequestParam String id) {
         gymSheetService.deleteGymSheet(id);
         return ResponseEntity.ok().build();
     }

@@ -9,7 +9,6 @@ public class ExerciseDto {
         this.gruppoMuscolare = gruppoMuscolare;
     }
 
-    // Getters e Setters
     public String getNome() {
         return nome;
     }

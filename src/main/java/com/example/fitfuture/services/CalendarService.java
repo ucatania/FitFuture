@@ -33,7 +33,6 @@ public class CalendarService {
     }
 
     public void addWorkoutToDate(WorkoutDto workoutDto) {
-        // Verifica esistenza dell'utente e della scheda in palestra
         if (!userRepository.existsById(workoutDto.getAthleteId())) {
             throw new IllegalArgumentException("Athlete not found.");
         }
@@ -48,7 +47,7 @@ public class CalendarService {
     public void updateWorkout(String id, WorkoutDto workoutDto) {
         Optional<Workout> optionalWorkout = workoutRepository.findById(id);
         if (optionalWorkout.isPresent() && optionalWorkout.get().getAthleteId().equals(workoutDto.getAthleteId())) {
-            // Verifica esistenza della scheda in palestra
+
             if (!gymSheetRepository.existsById(workoutDto.getGymSheetId())) {
                 throw new IllegalArgumentException("GymSheet not found.");
             }
