@@ -30,7 +30,7 @@ public class CalendarController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/workouts/updateWorkout}")
+    @PutMapping("/workouts/updateWorkout")
     public ResponseEntity<Void> updateWorkout(@RequestParam String id, @RequestBody WorkoutDto workoutDto, @AuthenticationPrincipal CustomUserDetails userDetails) {
         workoutDto.setAthleteId(userDetails.getId());
         calendarService.updateWorkout(id, workoutDto);
