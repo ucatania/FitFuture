@@ -96,4 +96,28 @@ public class UserController {
         userService.deleteUser(username);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/getUsername")
+    public ResponseEntity<String> getUsername(@RequestParam String userId) {
+        User user = userService.getUserById(userId);
+        return ResponseEntity.ok(user.getUsername());
+    }
+
+    @GetMapping("/getUserID")
+    public ResponseEntity<String> getUserID(@RequestParam String username) {
+        User user = userService.getUser(username);
+        return ResponseEntity.ok(user.getId());
+    }
+
+    @GetMapping("/getEmail")
+    public ResponseEntity<String> getEmail(@RequestParam String username) {
+        User user = userService.getUser(username);
+        return ResponseEntity.ok(user.getEmail());
+    }
+
+    @GetMapping("/getRole")
+    public ResponseEntity<User.Role> getRole(@RequestParam String username) {
+        User user = userService.getUser(username);
+        return ResponseEntity.ok(user.getRole());
+    }
 }
