@@ -98,7 +98,7 @@ public class UserController {
     }
 
     @GetMapping("/getUsername")
-    public ResponseEntity<String> getUsername(@RequestParam String userId) {
+    public ResponseEntity<String> getUsernameById(@RequestParam String userId) {
         User user = userService.getUserById(userId);
         return ResponseEntity.ok(user.getUsername());
     }
