@@ -42,19 +42,35 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public User updateUser(String username, User user) {
+    public User updateUserEmail(String username, User user) {
         User existingUser = userRepository.findByUsername(username);
         if (existingUser != null) {
-            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-                existingUser.setPassword(SecurityConfig.encodePassword(user.getPassword()));
+            // Aggiorna solo l'email, lasciando invariati gli altri attributi
+            if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+                existingUser.setEmail(user.getEmail());
             }
-            existingUser.setEmail(user.getEmail());
-            existingUser.setRole(user.getRole());
             return userRepository.save(existingUser);
         } else {
             throw new UserNotFoundException(username);
         }
     }
+
+    public User updateUserPassword(String username, User user) {
+        User existingUser = userRepository.findByUsername(username);
+        if (existingUser != null) {
+            // Aggiorna solo la password se fornita
+            if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+                existingUser.setPassword(SecurityConfig.encodePassword(user.getPassword()));
+            }
+            // Salva l'utente con la nuova password
+            return userRepository.save(existingUser);
+        } else {
+            throw new UserNotFoundException(username);
+        }
+    }
+
+
+
 
     public void deleteUser(String username) {
         User user = userRepository.findByUsername(username);

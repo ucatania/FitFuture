@@ -76,13 +76,27 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUser_shouldThrowException_whenNotFound() {
+    void updateUserPassword_shouldThrowException_whenNotFound() {
         User updateUser = new User("john_doe", "new_password", "new_email@example.com", User.Role.ATLETA);
         when(userRepository.findByUsername("john_doe")).thenReturn(null);
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> userService.updateUser("john_doe", updateUser));
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> userService.updateUserPassword("john_doe", updateUser));
+
         assertEquals("User not found with username: john_doe", exception.getMessage());
     }
+
+    @Test
+    void updateUserEmail_shouldThrowException_whenNotFound() {
+        User updateUser = new User("john_doe", "new_password", "new_email@example.com", User.Role.ATLETA);
+        when(userRepository.findByUsername("john_doe")).thenReturn(null);
+
+        RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> userService.updateUserEmail("john_doe", updateUser));
+
+        assertEquals("User not found with username: john_doe", exception.getMessage());
+    }
+
 
     @Test
     void deleteUser_shouldCallDelete_whenUserExists() {

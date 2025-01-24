@@ -82,22 +82,6 @@ public class GymSheetController {
         return ResponseEntity.ok(gymSheets);
     }
 
-    // Endpoint per ottenere le schede di un personal trainer autenticato
-    @GetMapping("/trainer")
-    public ResponseEntity<List<GymSheet>> getGymSheetsByTrainer(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        String trainerId = userDetails.getId();
-
-        boolean isTrainer = userDetails.getAuthorities()
-                .stream()
-                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("PERSONAL_TRAINER"));
-
-        if (!isTrainer) {
-            return ResponseEntity.status(403).body(null);
-        }
-
-        List<GymSheet> gymSheets = gymSheetService.getGymSheetsByTrainer(trainerId);
-        return ResponseEntity.ok(gymSheets);
-    }
 
     // Endpoint per ottenere la lista degli atleti associati a un personal trainer
      @GetMapping("/trainer/list-of-athlete")
@@ -125,17 +109,45 @@ public class GymSheetController {
         return ResponseEntity.ok().build();
     }
 
-    // Endpoint per aggiornare una scheda
-    @PutMapping("/update")
-    public ResponseEntity<Void> updateGymSheet(@RequestParam String id, @RequestBody GymSheetDto gymSheetDto) {
-        gymSheetService.updateGymSheet(id, gymSheetDto);
-        return ResponseEntity.ok().build();
-    }
 
     // Endpoint per eliminare una scheda
     @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteGymSheet(@RequestParam String id) {
         gymSheetService.deleteGymSheet(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/trainer/gymSheets")
+    public ResponseEntity<List<GymSheet>> getGymSheetByTrainer(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        String trainerId = userDetails.getId();
+
+        boolean isTrainer = userDetails.getAuthorities()
+                .stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("PERSONAL_TRAINER"));
+
+        if (!isTrainer) {
+            return ResponseEntity.status(403).body(null); // Accesso negato se non è un personal trainer
+        }
+
+        List<GymSheet> gymSheets = gymSheetService.getGymSheetsByTrainer(trainerId);
+        return ResponseEntity.ok(gymSheets);
+    }
+
+
+    @PutMapping("/{gymSheetId}")
+    public ResponseEntity<Void> updateGymSheetById(
+            @PathVariable String gymSheetId,
+            @RequestBody GymSheetDto gymSheetDto,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        boolean isTrainer = userDetails.getAuthorities()
+                .stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("PERSONAL_TRAINER"));
+
+        if (!isTrainer) {
+            return ResponseEntity.status(403).build(); // Accesso negato se non è un personal trainer
+        }
+
+        gymSheetService.updateGymSheet(gymSheetId, gymSheetDto);
         return ResponseEntity.ok().build();
     }
 }

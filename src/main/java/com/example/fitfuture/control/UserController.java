@@ -80,14 +80,14 @@ public class UserController {
     public ResponseEntity<User> changeEmail(@RequestParam String username, @RequestParam String newEmail) {
         User user = userService.getUser(username);
         user.setEmail(newEmail);
-        return ResponseEntity.ok(userService.updateUser(username, user));
+        return ResponseEntity.ok(userService.updateUserEmail(username, user));
     }
 
     @PutMapping("/changePassword")
     public ResponseEntity<User> changePassword(@RequestParam String username, @RequestParam String newPassword) {
         User user = userService.getUser(username);
         user.setPassword(newPassword);
-        return ResponseEntity.ok(userService.updateUser(username, user));
+        return ResponseEntity.ok(userService.updateUserPassword(username, user));
     }
 
     @DeleteMapping("/deleteUser")
