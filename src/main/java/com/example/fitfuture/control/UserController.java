@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "*") // ✅ Permette richieste da qualsiasi dominio (puoi limitarlo se vuoi)
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
