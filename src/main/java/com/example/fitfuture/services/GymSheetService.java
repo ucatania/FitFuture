@@ -133,4 +133,33 @@ public class GymSheetService {
         return gymSheetRepository.findById(gymSheetId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Scheda non trovata."));
     }
+
+    public String getPersonalTrainerByAthleteUsername(String athleteUsername) {
+        // Trova l'atleta nel database
+        User athlete = userRepository.findByUsername(athleteUsername);
+
+        if (athlete == null || !athlete.getRole().equals(User.Role.ATLETA)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Atleta non trovato o ruolo non valido.");
+        }
+
+        String athleteId = athlete.getId();
+
+        // Trova le GymSheet associate all'atleta
+        List<GymSheet> gymSheets = gymSheetRepository.findByAthleteId(athleteId);
+
+        // Controlla se almeno una GymSheet ha un Personal Trainer
+        for (GymSheet gymSheet : gymSheets) {
+            if (gymSheet.getPersonalTrainerId() != null) {
+                // Usa il metodo findById predefinito di MongoRepository che restituisce un Optional<User>
+                Optional<User> personalTrainerOptional = userRepository.findById(gymSheet.getPersonalTrainerId());
+
+                if (personalTrainerOptional.isPresent()) {
+                    return personalTrainerOptional.get().getUsername();  // Restituisce il Personal Trainer
+                }
+            }
+        }
+
+        // Nessun PT trovato, ritorna null
+        return null;  // Indica che non c'è nessun personal trainer
+    }
 }

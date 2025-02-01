@@ -151,5 +151,16 @@ public class GymSheetController {
         gymSheetService.updateGymSheet(gymSheetId, gymSheetDto);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/athlete/trainer")
+    public ResponseEntity<?> getTrainerByAthleteUsername(@RequestParam String username) {
+        String trainer = gymSheetService.getPersonalTrainerByAthleteUsername(username);
+
+        if (trainer == null) {
+            return ResponseEntity.ok("No Personal Trainer");  // Risposta senza errore, solo un messaggio
+        }
+
+        return ResponseEntity.ok(trainer);
+    }
 }
 
