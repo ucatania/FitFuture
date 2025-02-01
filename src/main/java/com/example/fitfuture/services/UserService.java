@@ -92,4 +92,13 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
     }
+
+    public int getRoleAsInt(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UserNotFoundException("User not found: " + username);
+        }
+        return user.getRole() == User.Role.PERSONAL_TRAINER ? 1 : 0;
+    }
+
 }

@@ -121,4 +121,9 @@ public class UserController {
         User user = userService.getUser(username);
         return ResponseEntity.ok(user.getRole());
     }
+
+    @GetMapping("/getRoleAsInt")
+    public ResponseEntity<Integer> getRoleAsInt(@RequestParam String username) {
+        return ResponseEntity.ok(userService.getRoleAsInt(username));
+    }
 }
