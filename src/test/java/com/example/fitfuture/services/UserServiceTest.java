@@ -116,4 +116,19 @@ class UserServiceTest {
 
         verify(userRepository, never()).delete(any(User.class));
     }
+    @Test
+    void getRoleAsInt_shouldReturnCorrectRoleValue() {
+        User personalTrainer = new User("trainer_user", "password", "trainer@example.com", User.Role.PERSONAL_TRAINER);
+        User athlete = new User("athlete_user", "password", "athlete@example.com", User.Role.ATLETA);
+
+        when(userRepository.findByUsername("trainer_user")).thenReturn(personalTrainer);
+        when(userRepository.findByUsername("athlete_user")).thenReturn(athlete);
+        when(userRepository.findByUsername("non_existent")).thenReturn(null);
+
+        assertEquals(1, userService.getRoleAsInt("trainer_user"), "Expected 1 for PERSONAL_TRAINER role");
+        assertEquals(0, userService.getRoleAsInt("athlete_user"), "Expected 0 for ATLETA role");
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> userService.getRoleAsInt("non_existent"));
+        assertEquals("User not found: non_existent", exception.getMessage());
+    }
 }
