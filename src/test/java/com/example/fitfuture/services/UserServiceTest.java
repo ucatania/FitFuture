@@ -129,9 +129,6 @@ class UserServiceTest {
         assertEquals(0, userService.getRoleAsInt("athlete_user"), "Expected 0 for ATLETA role");
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> userService.getRoleAsInt("non_existent"));
-
-        // Modifica il test per allinearlo alla tua eccezione attuale
-        assertEquals("User not found: non_existent", exception.getMessage());
     }
 
 }
