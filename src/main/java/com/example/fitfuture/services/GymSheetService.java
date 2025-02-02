@@ -180,4 +180,20 @@ public class GymSheetService {
                 .map(User::getEmail)
                 .collect(Collectors.toList());
     }
+
+    public List<String> getAthleteIdsByTrainerId(String trainerId) {
+        if (userRepository.findById(trainerId)
+                .filter(user -> user.getRole().equals(User.Role.PERSONAL_TRAINER))
+                .isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal Trainer non trovato.");
+        }
+
+        List<GymSheet> gymSheets = gymSheetRepository.findByPersonalTrainerId(trainerId);
+
+        return gymSheets.stream()
+                .map(GymSheet::getAthleteId)
+                .distinct() // Rimuove duplicati
+                .collect(Collectors.toList());
+    }
+
 }

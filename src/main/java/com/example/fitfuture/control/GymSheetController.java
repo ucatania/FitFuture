@@ -1,6 +1,7 @@
 package com.example.fitfuture.control;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -189,5 +190,24 @@ public class GymSheetController {
         return ResponseEntity.ok(responseBody);
     }
 
+    @GetMapping(value = "/trainer/athletesIds", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> getAthleteIdsByTrainer(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        String trainerId = userDetails.getId();
+
+        boolean isPT = userDetails.getAuthorities()
+                .stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("PERSONAL_TRAINER"));
+
+        if (!isPT) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Accesso negato");
+        }
+
+        List<String> athleteIds = gymSheetService.getAthleteIdsByTrainerId(trainerId);
+
+        // Uniamo gli ID in una stringa separata da "\n" per averli uno sotto l'altro
+        String responseBody = String.join("\n", athleteIds);
+
+        return ResponseEntity.ok(responseBody);
+    }
 }
 
