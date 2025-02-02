@@ -162,5 +162,21 @@ public class GymSheetController {
 
         return ResponseEntity.ok(trainer);
     }
+
+    @GetMapping("/trainer/athletesEmail")
+    public ResponseEntity<List<String>> getAthleteEmailsByTrainer(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        String trainerId = userDetails.getId();
+
+        boolean isPT = userDetails.getAuthorities()
+                .stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("PERSONAL_TRAINER"));
+
+        if (!isPT) {
+            return ResponseEntity.status(403).body(null); // Accesso negato se non è un personal trainer
+        }
+
+        List<String> athletes = gymSheetService.getAthletesEmailsByTrainerId(trainerId);
+        return ResponseEntity.ok(athletes);
+    }
 }
 

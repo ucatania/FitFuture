@@ -162,4 +162,22 @@ public class GymSheetService {
         // Nessun PT trovato, ritorna null
         return null;  // Indica che non c'è nessun personal trainer
     }
+
+    public List<String> getAthletesEmailsByTrainerId(String trainerId) {
+        if (userRepository.findById(trainerId).filter(user -> user.getRole().equals(User.Role.PERSONAL_TRAINER)).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Personal Trainer non trovato.");
+        }
+        List<GymSheet> gymSheets = gymSheetRepository.findByPersonalTrainerId(trainerId);
+
+        List<String> athleteIds = gymSheets.stream()
+                .map(GymSheet::getAthleteId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<User> athletes = userRepository.findByIdIn(athleteIds);
+
+        return athletes.stream()
+                .map(User::getEmail)
+                .collect(Collectors.toList());
+    }
 }
