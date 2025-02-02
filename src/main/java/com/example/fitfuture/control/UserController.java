@@ -82,18 +82,29 @@ public class UserController {
         String username = request.get("username");
         String newEmail = request.get("newEmail");
 
+        if (username == null || newEmail == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
         User user = userService.getUser(username);
         user.setEmail(newEmail);
         return ResponseEntity.ok(userService.updateUserEmail(username, user));
     }
 
-
     @PutMapping("/changePassword")
-    public ResponseEntity<User> changePassword(@RequestParam String username, @RequestParam String newPassword) {
+    public ResponseEntity<User> changePassword(@RequestBody Map<String, String> requestBody) {
+        String username = requestBody.get("username");
+        String newPassword = requestBody.get("newPassword");
+
+        if (username == null || newPassword == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
         User user = userService.getUser(username);
         user.setPassword(newPassword);
         return ResponseEntity.ok(userService.updateUserPassword(username, user));
     }
+
 
     @DeleteMapping("/deleteUser")
     public ResponseEntity<Void> deleteUser(@RequestParam String username) {
