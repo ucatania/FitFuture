@@ -1,6 +1,7 @@
 package com.example.fitfuture.control;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -84,8 +85,8 @@ public class GymSheetController {
 
 
     // Endpoint per ottenere la lista degli atleti associati a un personal trainer
-     @GetMapping("/trainer/list-of-athlete")
-    public ResponseEntity<List<String>> getAthleteByTrainer(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    @GetMapping(value = "/trainer/list-of-athlete", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> getAthleteByTrainer(@AuthenticationPrincipal CustomUserDetails userDetails) {
         String trainerId = userDetails.getId();
 
         boolean isPT = userDetails.getAuthorities()
@@ -93,12 +94,17 @@ public class GymSheetController {
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("PERSONAL_TRAINER"));
 
         if (!isPT) {
-            return ResponseEntity.status(403).body(null); // Accesso negato se non è un personal trainer
+            return ResponseEntity.status(403).body("Accesso negato");
         }
 
         List<String> athletes = gymSheetService.getAthletesByTrainerId(trainerId);
-        return ResponseEntity.ok(athletes);
+
+        // Unisci i nomi separandoli con una nuova riga
+        String responseBody = String.join("\n", athletes);
+
+        return ResponseEntity.ok(responseBody);
     }
+
 
 
 
@@ -163,8 +169,8 @@ public class GymSheetController {
         return ResponseEntity.ok(trainer);
     }
 
-    @GetMapping("/trainer/athletesEmail")
-    public ResponseEntity<List<String>> getAthleteEmailsByTrainer(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    @GetMapping(value = "/trainer/athletesEmail", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> getAthleteEmailsByTrainer(@AuthenticationPrincipal CustomUserDetails userDetails) {
         String trainerId = userDetails.getId();
 
         boolean isPT = userDetails.getAuthorities()
@@ -172,11 +178,16 @@ public class GymSheetController {
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("PERSONAL_TRAINER"));
 
         if (!isPT) {
-            return ResponseEntity.status(403).body(null); // Accesso negato se non è un personal trainer
+            return ResponseEntity.status(403).body("Accesso negato");
         }
 
         List<String> athletes = gymSheetService.getAthletesEmailsByTrainerId(trainerId);
-        return ResponseEntity.ok(athletes);
+
+        // Restituisci le email separate da newline
+        String responseBody = String.join("\n", athletes);
+
+        return ResponseEntity.ok(responseBody);
     }
+
 }
 
