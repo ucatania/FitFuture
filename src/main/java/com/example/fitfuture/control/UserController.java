@@ -78,11 +78,15 @@ public class UserController {
     }
 
     @PutMapping("/changeEmail")
-    public ResponseEntity<User> changeEmail(@RequestParam String username, @RequestParam String newEmail) {
+    public ResponseEntity<User> changeEmail(@RequestBody Map<String, String> request) {
+        String username = request.get("username");
+        String newEmail = request.get("newEmail");
+
         User user = userService.getUser(username);
         user.setEmail(newEmail);
         return ResponseEntity.ok(userService.updateUserEmail(username, user));
     }
+
 
     @PutMapping("/changePassword")
     public ResponseEntity<User> changePassword(@RequestParam String username, @RequestParam String newPassword) {

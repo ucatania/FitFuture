@@ -69,9 +69,6 @@ public class UserService implements UserDetailsService {
         }
     }
 
-
-
-
     public void deleteUser(String username) {
         User user = userRepository.findByUsername(username);
         if (user != null) {
