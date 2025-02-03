@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ExerciseService {
@@ -72,4 +73,19 @@ public class ExerciseService {
             throw new ExerciseNotFoundException("No exercises found with muscle group: " + gruppoMuscolare);
         }
     }
+
+    public List<String> getExerciseIdsByNames(List<String> exerciseNames) {
+        // Recupera tutti gli esercizi dal repository
+        List<Exercise> exercises = exerciseRepository.findAll();
+
+        // Filtra gli esercizi per nome e ottieni la lista degli ID
+        return exercises.stream()
+                .filter(exercise -> exerciseNames.contains(exercise.getNome())) // Filtra per nome
+                .map(Exercise::getId) // Estrai gli ID
+                .collect(Collectors.toList()); // Restituisci la lista di ID
+    }
+
+
+
+
 }
