@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/exercises")
@@ -33,6 +35,16 @@ public class ExerciseController {
     @GetMapping("/getAllExercises")
     public ResponseEntity<List<Exercise>> getAllExercises() {
         return ResponseEntity.ok(exerciseService.getAllExercises());
+    }
+
+    @GetMapping("/getAllExerciseNames")
+    public ResponseEntity<List<String>> getAllExerciseNames() {
+        List<String> exerciseNames = exerciseService.getAllExercises()
+                .stream()
+                .map(Exercise::getNome) // Prende solo il nome degli esercizi
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(exerciseNames);
     }
 
     // Endpoint per la ricerca per nome
