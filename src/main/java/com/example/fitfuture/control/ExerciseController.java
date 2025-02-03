@@ -30,7 +30,7 @@ public class ExerciseController {
         return ResponseEntity.ok(exerciseService.getExerciseById(id));
     }
 
-    @GetMapping
+    @GetMapping("/getAllExercises")
     public ResponseEntity<List<Exercise>> getAllExercises() {
         return ResponseEntity.ok(exerciseService.getAllExercises());
     }
