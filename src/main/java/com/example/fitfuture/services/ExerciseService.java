@@ -2,67 +2,90 @@ package com.example.fitfuture.services;
 
 import com.example.fitfuture.dto.ExerciseDto;
 import com.example.fitfuture.entity.Exercise;
+import com.example.fitfuture.exceptions.ExerciseAlreadyExistingException;
 import com.example.fitfuture.exceptions.ExerciseNotFoundException;
 import com.example.fitfuture.repository.ExerciseRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class ExerciseService {
 
     private final ExerciseRepository exerciseRepository;
 
-    @Autowired
     public ExerciseService(ExerciseRepository exerciseRepository) {
         this.exerciseRepository = exerciseRepository;
     }
 
+    // ✅ Creazione di un esercizio con controllo di unicità del nome
     public Exercise createExercise(ExerciseDto exerciseDto) {
+        // Controlla se esiste già un esercizio con lo stesso nome
+        Optional<Exercise> existingExercise = exerciseRepository.findByNome(exerciseDto.getNome());
+        if (existingExercise.isPresent()) {
+            throw new ExerciseAlreadyExistingException("This exercise already exists");
+        }
+
+        // Se non esiste, lo crea e lo salva
         Exercise exercise = new Exercise(exerciseDto.getNome(), exerciseDto.getGruppoMuscolare());
         return exerciseRepository.save(exercise);
     }
 
+    // ✅ Ottieni un esercizio per ID
     public Exercise getExerciseById(String id) {
-        return exerciseRepository.findById(id).orElse(null);
+        return exerciseRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Esercizio non trovato con ID: " + id));
     }
 
+    // ✅ Ottieni tutti gli esercizi
     public List<Exercise> getAllExercises() {
         return exerciseRepository.findAll();
     }
 
+    // ✅ Ottieni tutti gli esercizi con un determinato nome (ricerca parziale)
     public List<Exercise> getExercisesByNome(String nome) {
         return exerciseRepository.findByNomeContaining(nome);
     }
 
+    // ✅ Ottieni tutti gli esercizi per gruppo muscolare
     public List<Exercise> getExercisesByGruppoMuscolare(String gruppoMuscolare) {
         return exerciseRepository.findByGruppoMuscolare(gruppoMuscolare);
     }
 
+    // ✅ Aggiorna un esercizio esistente
     public Exercise updateExercise(String id, ExerciseDto exerciseDto) {
-        Exercise existingExercise = exerciseRepository.findById(id).orElse(null);
-        if (existingExercise != null) {
-            existingExercise.setNome(exerciseDto.getNome());
-            existingExercise.setGruppoMuscolare(exerciseDto.getGruppoMuscolare());
-            return exerciseRepository.save(existingExercise);
-        } else {
-            throw new ExerciseNotFoundException("Exercise not found with id: " + id);
+        Exercise existingExercise = exerciseRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Esercizio non trovato con ID: " + id));
+
+        // Controlla se esiste un altro esercizio con lo stesso nome (ma ID diverso)
+        Optional<Exercise> exerciseWithSameName = exerciseRepository.findByNome(exerciseDto.getNome());
+        if (exerciseWithSameName.isPresent() && !exerciseWithSameName.get().getId().equals(id)) {
+            throw new IllegalArgumentException("Un altro esercizio con questo nome esiste già!");
         }
+
+        // Aggiorna i campi
+        existingExercise.setNome(exerciseDto.getNome());
+        existingExercise.setGruppoMuscolare(exerciseDto.getGruppoMuscolare());
+
+        return exerciseRepository.save(existingExercise);
     }
 
+    // ✅ Elimina un esercizio per ID
     public void deleteExercise(String id) {
+        if (!exerciseRepository.existsById(id)) {
+            throw new IllegalArgumentException("Esercizio non trovato con ID: " + id);
+        }
         exerciseRepository.deleteById(id);
     }
 
+    // ✅ Elimina un esercizio per nome
     public void deleteExerciseByNome(String nome) {
         List<Exercise> exercises = exerciseRepository.findByNomeContaining(nome);
-        if (!exercises.isEmpty()) {
-            exerciseRepository.deleteAll(exercises);
-        } else {
-            throw new ExerciseNotFoundException("No exercises found with name: " + nome);
+        if (exercises.isEmpty()) {
+            throw new IllegalArgumentException("Nessun esercizio trovato con il nome: " + nome);
         }
+        exerciseRepository.deleteAll(exercises);
     }
 
     public void deleteExerciseByGruppoMuscolare(String gruppoMuscolare) {
@@ -74,18 +97,11 @@ public class ExerciseService {
         }
     }
 
+        // ✅ Ottieni gli ID degli esercizi in base ai nomi
     public List<String> getExerciseIdsByNames(List<String> exerciseNames) {
-        // Recupera tutti gli esercizi dal repository
-        List<Exercise> exercises = exerciseRepository.findAll();
-
-        // Filtra gli esercizi per nome e ottieni la lista degli ID
-        return exercises.stream()
-                .filter(exercise -> exerciseNames.contains(exercise.getNome())) // Filtra per nome
-                .map(Exercise::getId) // Estrai gli ID
-                .collect(Collectors.toList()); // Restituisci la lista di ID
+        return exerciseRepository.findAll().stream()
+                .filter(exercise -> exerciseNames.contains(exercise.getNome()))
+                .map(Exercise::getId)
+                .toList();
     }
-
-
-
-
 }
