@@ -4,6 +4,8 @@ public class ExerciseDto {
     private String nome;
     private String gruppoMuscolare;
 
+    public ExerciseDto() {}
+
     public ExerciseDto(String nome, String gruppoMuscolare) {
         this.nome = nome;
         this.gruppoMuscolare = gruppoMuscolare;
