@@ -56,7 +56,7 @@ public class ExerciseService {
     // ✅ Aggiorna un esercizio esistente
     public Exercise updateExercise(String id, ExerciseDto exerciseDto) {
         Exercise existingExercise = exerciseRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Esercizio non trovato con ID: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Exercise not found with id: " + id));
 
         // Controlla se esiste un altro esercizio con lo stesso nome (ma ID diverso)
         Optional<Exercise> exerciseWithSameName = exerciseRepository.findByNome(exerciseDto.getNome());
@@ -83,7 +83,7 @@ public class ExerciseService {
     public void deleteExerciseByNome(String nome) {
         List<Exercise> exercises = exerciseRepository.findByNomeContaining(nome);
         if (exercises.isEmpty()) {
-            throw new IllegalArgumentException("Nessun esercizio trovato con il nome: " + nome);
+            throw new IllegalArgumentException("No exercises found with name: " + nome);
         }
         exerciseRepository.deleteAll(exercises);
     }

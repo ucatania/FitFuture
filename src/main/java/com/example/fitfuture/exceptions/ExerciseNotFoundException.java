@@ -11,6 +11,6 @@ public class ExerciseNotFoundException extends RuntimeException {
     }
 
     public ExerciseNotFoundException(Long exerciseId) {
-        super("Exercise not found with ID: " + exerciseId);
+        super("Exercise not found with id: " + exerciseId);
     }
 }
