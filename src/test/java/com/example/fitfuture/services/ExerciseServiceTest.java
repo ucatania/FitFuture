@@ -133,11 +133,15 @@ class ExerciseServiceTest {
     @Test
     void deleteExercise_shouldCallDeleteById_whenIdExists() {
         String exerciseId = "1";
+        Exercise exercise = new Exercise("Push Up", "Chest");
+
+        when(exerciseRepository.existsById(exerciseId)).thenReturn(true);
+        doNothing().when(exerciseRepository).deleteById(exerciseId);
 
         exerciseService.deleteExercise(exerciseId);
-
         verify(exerciseRepository).deleteById(exerciseId);
     }
+
 
     @Test
     void deleteExerciseByNome_shouldDeleteExercises_whenFound() {
