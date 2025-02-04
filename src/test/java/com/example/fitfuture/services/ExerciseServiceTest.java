@@ -61,10 +61,13 @@ class ExerciseServiceTest {
     void getExerciseById_shouldReturnNull_whenIdDoesNotExist() {
         when(exerciseRepository.findById("1")).thenReturn(Optional.empty());
 
-        Exercise foundExercise = exerciseService.getExerciseById("1");
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            exerciseService.getExerciseById("1");
+        });
 
-        assertNull(foundExercise);
+        assertEquals("Esercizio non trovato con ID: 1", exception.getMessage());
     }
+
 
     @Test
     void getAllExercises_shouldReturnListOfExercises() {
