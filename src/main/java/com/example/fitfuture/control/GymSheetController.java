@@ -107,8 +107,6 @@ public class GymSheetController {
     }
 
 
-
-
     // Endpoint per creare una nuova scheda
     @PostMapping("/createGymSheet")
     public ResponseEntity<Void> createGymSheet(@RequestBody GymSheetDto gymSheetDto) {

@@ -1,10 +1,13 @@
 package com.example.fitfuture.dto;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
 public class GymSheetDto {
     private String athleteId;
     private String personalTrainerId;
+
+    @JsonProperty("exerciseIds")
     private List<String> exerciseIds;
 
     public GymSheetDto(String athleteId, String personalTrainerId, List<String> exerciseIds) {
