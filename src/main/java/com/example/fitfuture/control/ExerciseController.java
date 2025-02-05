@@ -76,9 +76,9 @@ public class ExerciseController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/getExerciseIdsByNames")
-    public ResponseEntity<List<String>> getExerciseIdsByNames(@RequestParam List<String> exerciseNames) {
-        List<String> exerciseIds = exerciseService.getExerciseIdsByNames(exerciseNames);  // Chiama il metodo del servizio
+    @PostMapping("/getExerciseIdsByNames")
+    public ResponseEntity<List<String>> getExerciseIdsByNames(@RequestBody List<String> exerciseNames) {
+        List<String> exerciseIds = exerciseService.getExerciseIdsByNames(exerciseNames);
         return ResponseEntity.ok(exerciseIds);
     }
 
