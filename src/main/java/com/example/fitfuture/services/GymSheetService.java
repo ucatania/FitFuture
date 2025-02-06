@@ -196,4 +196,17 @@ public class GymSheetService {
                 .collect(Collectors.toList());
     }
 
+    public List<String> getGymSheetIdsByAthlete(String athleteId) {
+        if (userRepository.findById(athleteId).filter(user -> user.getRole().equals(User.Role.ATLETA)).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Atleta non trovato.");
+        }
+
+        return gymSheetRepository.findByAthleteId(athleteId)
+                .stream()
+                .map(GymSheet::getId)
+                .collect(Collectors.toList());
+    }
+
+
+
 }

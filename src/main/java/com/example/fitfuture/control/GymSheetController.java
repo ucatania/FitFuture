@@ -207,5 +207,22 @@ public class GymSheetController {
 
         return ResponseEntity.ok(responseBody);
     }
+
+    @GetMapping("/athlete/gymSheetIds")
+    public ResponseEntity<List<String>> getGymSheetIdsByAthlete(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        String athleteId = userDetails.getId();
+
+        boolean isAthlete = userDetails.getAuthorities()
+                .stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ATLETA"));
+
+        if (!isAthlete) {
+            return ResponseEntity.status(403).body(null);
+        }
+
+        List<String> gymSheetIds = gymSheetService.getGymSheetIdsByAthlete(athleteId);
+        return ResponseEntity.ok(gymSheetIds);
+    }
+
 }
 
