@@ -1,5 +1,6 @@
 package com.example.fitfuture.services;
 
+import com.example.fitfuture.exceptions.GymSheetNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -205,6 +206,16 @@ public class GymSheetService {
                 .stream()
                 .map(GymSheet::getId)
                 .collect(Collectors.toList());
+    }
+
+    public List<String> getExerciseNamesByGymSheetId(String gymSheetId) {
+        List<String> exerciseIds = gymSheetRepository.findById(gymSheetId)
+                .map(GymSheet::getExerciseIds)
+                .orElseThrow(() -> new GymSheetNotFoundException(gymSheetId));
+
+        return exerciseRepository.findAllById(exerciseIds).stream()
+                .map(Exercise::getNome) // Ora restituisce solo i nomi degli esercizi
+                .toList();
     }
 
 

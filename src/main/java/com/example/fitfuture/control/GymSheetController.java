@@ -224,5 +224,10 @@ public class GymSheetController {
         return ResponseEntity.ok(gymSheetIds);
     }
 
+    @GetMapping("/getExercises")
+    public ResponseEntity<List<String>> getExerciseNamesByGymSheetId(@RequestParam String idGymSheet) {
+        List<String> exerciseNames = gymSheetService.getExerciseNamesByGymSheetId(idGymSheet);
+        return ResponseEntity.ok(exerciseNames);
+    }
 }
 
