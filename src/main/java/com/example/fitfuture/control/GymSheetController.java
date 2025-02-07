@@ -1,5 +1,6 @@
 package com.example.fitfuture.control;
 
+import com.example.fitfuture.dto.ExerciseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -230,10 +231,10 @@ public class GymSheetController {
         return ResponseEntity.ok(exerciseNames);
     }
 
-    @GetMapping("/muscle-groups")
-    public ResponseEntity<List<String>> getMuscleGroups(@RequestParam String idGymSheet) {
-        List<String> muscleGroups = gymSheetService.getMuscleGroupsByGymSheetId(idGymSheet);
-        return ResponseEntity.ok(muscleGroups);
+    @GetMapping("/exercises-with-muscle-groups")
+    public ResponseEntity<List<String>> getExercisesWithMuscleGroups(@RequestParam String idGymSheet) {
+        List<String> exercises = gymSheetService.getExercisesWithMuscleGroupsByGymSheetId(idGymSheet);
+        return ResponseEntity.ok(exercises);
     }
 }
 
