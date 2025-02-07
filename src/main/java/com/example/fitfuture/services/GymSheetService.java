@@ -218,6 +218,13 @@ public class GymSheetService {
                 .toList();
     }
 
+    public List<String> getMuscleGroupsByGymSheetId(String gymSheetId) {
+        List<String> exerciseIds = gymSheetRepository.findById(gymSheetId)
+                .map(GymSheet::getExerciseIds)
+                .orElseThrow(() -> new GymSheetNotFoundException(gymSheetId));
 
-
+        return exerciseRepository.findAllById(exerciseIds).stream()
+                .map(Exercise::getGruppoMuscolare) // Ora restituisce solo i gruppi muscolari degli esercizi
+                .toList();
+    }
 }
