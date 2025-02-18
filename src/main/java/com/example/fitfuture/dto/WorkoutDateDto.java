@@ -11,6 +11,7 @@ public class WorkoutDateDto {
         this.athleteUsername = athleteUsername;
     }
 
+
     public LocalDate getDate() {
         return date;
     }
