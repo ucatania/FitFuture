@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "*") // ✅ Permette richieste da qualsiasi dominio (puoi limitarlo se vuoi)
+@CrossOrigin(origins = "*") // Permette richieste da qualsiasi dominio (puoi limitarlo se vuoi)
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -45,7 +45,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<Void> login(@RequestBody LoginRequest loginRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -54,17 +54,16 @@ public class UserController {
                     )
             );
 
-            String base64Token = securityConfig.generateBase64Token(loginRequest.getUsername(), loginRequest.getPassword());
+            // Generazione del token, ma non viene restituito
+            securityConfig.generateBase64Token(loginRequest.getUsername(), loginRequest.getPassword());
 
-            Map<String, String> response = new HashMap<>();
-            response.put("username", authentication.getName());
-            response.put("base64", base64Token);
-
-            return ResponseEntity.ok(response);
+            // Restituzione di una risposta vuota
+            return ResponseEntity.ok().build();
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(401).body(Map.of("error", "Login failed: " + e.getMessage()));
+            return ResponseEntity.status(401).body(null); // Se fallisce, ritorna un errore con status 401
         }
     }
+
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserDto userDto) {
