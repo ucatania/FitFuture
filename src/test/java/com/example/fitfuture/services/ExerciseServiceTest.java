@@ -180,4 +180,60 @@ class ExerciseServiceTest {
         RuntimeException exception = assertThrows(RuntimeException.class, () -> exerciseService.deleteExerciseByGruppoMuscolare("Not Found"));
         assertEquals("No exercises found with muscle group: Not Found", exception.getMessage());
     }
+
+    @Test
+    void createExercise_shouldThrowException_whenExerciseAlreadyExists() {
+        ExerciseDto exerciseDto = new ExerciseDto("Push Up", "Chest");
+        when(exerciseRepository.findByNome("Push Up")).thenReturn(Optional.of(new Exercise("Push Up", "Chest")));
+
+        assertThrows(RuntimeException.class, () -> exerciseService.createExercise(exerciseDto));
+    }
+
+    @Test
+    void getExerciseIdsByNames_shouldReturnCorrectIds() {
+        Exercise exercise1 = new Exercise("Push Up", "Chest");
+        exercise1.setId("1");
+        Exercise exercise2 = new Exercise("Squat", "Legs");
+        exercise2.setId("2");
+        when(exerciseRepository.findAll()).thenReturn(Arrays.asList(exercise1, exercise2));
+
+        List<String> ids = exerciseService.getExerciseIdsByNames(Arrays.asList("Push Up", "Squat"));
+
+        assertEquals(2, ids.size());
+        assertTrue(ids.contains("1"));
+        assertTrue(ids.contains("2"));
+    }
+
+    @Test
+    void getExerciseIdsByNames_shouldReturnEmptyList_whenNoMatches() {
+        when(exerciseRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<String> ids = exerciseService.getExerciseIdsByNames(Arrays.asList("Nonexistent"));
+
+        assertTrue(ids.isEmpty());
+    }
+
+    @Test
+    void updateExercise_shouldThrowException_whenDuplicateNameExists() {
+        ExerciseDto exerciseDto = new ExerciseDto("Push Up", "Chest");
+        Exercise existingExercise = new Exercise("Bench Press", "Chest");
+        existingExercise.setId("1");
+
+        Exercise duplicateExercise = new Exercise("Push Up", "Chest");
+        duplicateExercise.setId("2");
+
+        when(exerciseRepository.findById("1")).thenReturn(Optional.of(existingExercise));
+        when(exerciseRepository.findByNome("Push Up")).thenReturn(Optional.of(duplicateExercise));
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> exerciseService.updateExercise("1", exerciseDto));
+        assertEquals("Un altro esercizio con questo nome esiste già!", exception.getMessage());
+    }
+
+    @Test
+    void deleteExerciseByGruppoMuscolare_shouldNotDelete_whenNoExercisesExist() {
+        when(exerciseRepository.findByGruppoMuscolare("Arms")).thenReturn(Collections.emptyList());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> exerciseService.deleteExerciseByGruppoMuscolare("Arms"));
+        assertEquals("No exercises found with muscle group: Arms", exception.getMessage());
+    }
 }
