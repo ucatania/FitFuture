@@ -237,4 +237,64 @@ public class GymSheetServiceTest {
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
         assertEquals("Scheda non trovata.", exception.getReason());
     }
+
+    @Test
+    void testGetAthletesByTrainerId_Success() {
+        // Setup
+        String trainerId = "trainer123";
+        String athleteId1 = "athlete1";
+        String athleteId2 = "athlete2";
+        List<GymSheet> gymSheets = Arrays.asList(
+                new GymSheet("1", athleteId1, trainerId, Collections.singletonList("exercise1")),
+                new GymSheet("2", athleteId2, trainerId, Collections.singletonList("exercise2"))
+        );
+
+        User athlete1 = new User(athleteId1, "athlete1", "athlete1@example.com", User.Role.ATLETA);
+        User athlete2 = new User(athleteId2, "athlete2", "athlete2@example.com", User.Role.ATLETA);
+
+        when(userRepository.findById(trainerId)).thenReturn(Optional.of(new User(trainerId, "trainer", "trainer@example.com", User.Role.PERSONAL_TRAINER)));
+        when(gymSheetRepository.findByPersonalTrainerId(trainerId)).thenReturn(gymSheets);
+        when(userRepository.findByIdIn(Arrays.asList(athleteId1, athleteId2))).thenReturn(Arrays.asList(athlete1, athlete2));
+
+        // Execute
+        List<String> result = gymSheetService.getAthletesByTrainerId(trainerId);
+
+        // Verify
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertTrue(result.contains("athlete1"));
+        assertTrue(result.contains("athlete2"));
+    }
+
+    @Test
+    void testGetAthletesByTrainerId_TrainerNotFound() {
+        // Setup
+        String trainerId = "trainer123";
+
+        when(userRepository.findById(trainerId)).thenReturn(Optional.empty());
+
+        // Execute and Verify
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            gymSheetService.getAthletesByTrainerId(trainerId);
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Personal Trainer non trovato.", exception.getReason());
+    }
+
+    @Test
+    void testGetAthletesByTrainerId_NoAthletes() {
+        // Setup
+        String trainerId = "trainer123";
+
+        when(userRepository.findById(trainerId)).thenReturn(Optional.of(new User(trainerId, "trainer", "trainer@example.com", User.Role.PERSONAL_TRAINER)));
+        when(gymSheetRepository.findByPersonalTrainerId(trainerId)).thenReturn(Collections.emptyList());
+
+        // Execute
+        List<String> result = gymSheetService.getAthletesByTrainerId(trainerId);
+
+        // Verify
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
 }

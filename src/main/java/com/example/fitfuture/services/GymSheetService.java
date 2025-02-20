@@ -227,4 +227,6 @@ public class GymSheetService {
                 .map(exercise -> exercise.getNome() + " - " + exercise.getGruppoMuscolare()) // Formatta la stringa con nome e gruppo muscolare
                 .toList();
     }
+
+
 }
