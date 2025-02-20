@@ -204,4 +204,37 @@ public class GymSheetServiceTest {
         assertTrue(gymSheets.isEmpty());
     }
 
+    @Test
+    void getGymSheetsByAthlete_shouldReturnGymSheets_whenAthleteExists() {
+        User athlete = new User("athleteId", "Athlete Name", "athlete@mail.com", User.Role.ATLETA);
+        GymSheet gymSheet1 = new GymSheet("gymSheetId1", "athleteId", null, Arrays.asList("exerciseId1"));
+        GymSheet gymSheet2 = new GymSheet("gymSheetId2", "athleteId", null, Arrays.asList("exerciseId2"));
+
+        when(userRepository.findById("athleteId")).thenReturn(Optional.of(athlete));
+        when(gymSheetRepository.findByAthleteId("athleteId")).thenReturn(Arrays.asList(gymSheet1, gymSheet2));
+
+        List<GymSheet> gymSheets = gymSheetService.getGymSheetsByAthlete("athleteId");
+
+        assertEquals(2, gymSheets.size());
+        assertTrue(gymSheets.contains(gymSheet1));
+        assertTrue(gymSheets.contains(gymSheet2));
+    }
+
+    @Test
+    void getGymSheetsByAthlete_shouldThrowException_whenAthleteNotFound() {
+        when(userRepository.findById("athleteId")).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> gymSheetService.getGymSheetsByAthlete("athleteId"));
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Atleta non trovato.", exception.getReason());
+    }
+
+    @Test
+    void deleteGymSheet_shouldThrowException_whenGymSheetNotFound() {
+        when(gymSheetRepository.findById("gymSheetId")).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> gymSheetService.deleteGymSheet("gymSheetId"));
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Scheda non trovata.", exception.getReason());
+    }
 }

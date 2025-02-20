@@ -1,16 +1,20 @@
 package com.example.fitfuture.services;
 
 import com.example.fitfuture.entity.User;
+import com.example.fitfuture.exceptions.UserNotFoundException;
+import com.example.fitfuture.exceptions.UsernameAlreadyExistsException;
 import com.example.fitfuture.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -131,4 +135,47 @@ class UserServiceTest {
         RuntimeException exception = assertThrows(RuntimeException.class, () -> userService.getRoleAsInt("non_existent"));
     }
 
+    @Test
+    void createUser_shouldThrowException_whenUsernameExists() {
+        User user = new User("john_doe", "password", "john@example.com", User.Role.ATLETA);
+        when(userRepository.findByUsername("john_doe")).thenReturn(user);
+
+        assertThrows(UsernameAlreadyExistsException.class, () -> userService.createUser(user));
+    }
+
+    @Test
+    void getUserById_shouldReturnUser_whenIdExists() {
+        User user = new User("john_doe", "password", "john@example.com", User.Role.ATLETA);
+        when(userRepository.findById("1")).thenReturn(Optional.of(user));
+
+        User foundUser = userService.getUserById("1");
+
+        assertNotNull(foundUser);
+        assertEquals("john_doe", foundUser.getUsername());
+    }
+
+    @Test
+    void getUserById_shouldThrowException_whenIdDoesNotExist() {
+        when(userRepository.findById("1")).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> userService.getUserById("1"));
+    }
+
+    @Test
+    void loadUserByUsername_shouldReturnUserDetails_whenUserExists() {
+        User user = new User("john_doe", "password", "john@example.com", User.Role.ATLETA);
+        when(userRepository.findByUsername("john_doe")).thenReturn(user);
+
+        UserDetails userDetails = userService.loadUserByUsername("john_doe");
+
+        assertNotNull(userDetails);
+        assertEquals("john_doe", ((UserDetails) userDetails).getUsername());
+    }
+
+    @Test
+    void loadUserByUsername_shouldThrowException_whenUserDoesNotExist() {
+        when(userRepository.findByUsername("unknown_user")).thenReturn(null);
+
+        assertThrows(UserNotFoundException.class, () -> userService.loadUserByUsername("unknown_user"));
+    }
 }
