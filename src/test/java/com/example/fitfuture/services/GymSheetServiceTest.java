@@ -301,6 +301,26 @@ public class GymSheetServiceTest {
     }
 
     @Test
+    void getGymSheetsByTrainer_shouldThrowException_whenTrainerNotFound() {
+        when(userRepository.findById("trainerId")).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> gymSheetService.getGymSheetsByTrainer("trainerId"));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Personal Trainer non trovato.", exception.getReason());
+    }
+    
+    @Test
+    void getGymSheetById_shouldThrowException_whenGymSheetNotFound() {
+        when(gymSheetRepository.findById("gymSheetId")).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> gymSheetService.getGymSheetById("gymSheetId"));
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Scheda non trovata.", exception.getReason());
+    }
+
+    @Test
     void testGetAthletesByTrainerId_NoAthletes() {
         // Setup
         String trainerId = "trainer123";
