@@ -335,4 +335,33 @@ public class GymSheetServiceTest {
         assertNotNull(result);
         assertTrue(result.isEmpty());
     }
+
+    @Test
+    void getGymSheetById_shouldReturnGymSheet_whenFound() {
+        GymSheet gymSheet = new GymSheet("gymSheetId", "athleteId", "trainerId", Arrays.asList("exerciseId1"));
+        when(gymSheetRepository.findById("gymSheetId")).thenReturn(Optional.of(gymSheet));
+
+        GymSheet result = gymSheetService.getGymSheetById("gymSheetId");
+
+        assertNotNull(result);
+        assertEquals("gymSheetId", result.getId());
+    }
+
+    @Test
+    void getGymSheetById_shouldThrowException_whenNotFound() {
+        when(gymSheetRepository.findById("gymSheetId")).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> gymSheetService.getGymSheetById("gymSheetId"));
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+    }
+
+
+    @Test
+    void updateGymSheet_shouldThrowException_whenGymSheetNotFound() {
+        GymSheetDto gymSheetDto = new GymSheetDto("athleteId", "trainerId", Arrays.asList("exerciseId1"));
+        when(gymSheetRepository.findById("gymSheetId")).thenReturn(Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> gymSheetService.updateGymSheet("gymSheetId", gymSheetDto));
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+    }
 }
