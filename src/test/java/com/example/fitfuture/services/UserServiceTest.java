@@ -34,6 +34,24 @@ class UserServiceTest {
     }
 
     @Test
+    void createUser_shouldThrowException_whenUsernameIsNull() {
+        User user = new User(null, "password", "john@example.com", User.Role.ATLETA);
+        assertThrows(IllegalArgumentException.class, () -> userService.createUser(user));
+    }
+
+    @Test
+    void createUser_shouldThrowException_whenPasswordIsNull() {
+        User user = new User("john_doe", null, "john@example.com", User.Role.ATLETA);
+        assertThrows(IllegalArgumentException.class, () -> userService.createUser(user));
+    }
+
+    @Test
+    void createUser_shouldThrowException_whenEmailIsNull() {
+        User user = new User("john_doe", "password", null, User.Role.ATLETA);
+        assertThrows(IllegalArgumentException.class, () -> userService.createUser(user));
+    }
+
+    @Test
     void createUser_shouldSaveUser_whenValidData() {
         User user = new User("john_doe", "password", "john@example.com", User.Role.ATLETA);
         when(userRepository.save(any(User.class))).thenReturn(user);

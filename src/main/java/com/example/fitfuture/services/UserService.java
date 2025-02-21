@@ -25,14 +25,28 @@ public class UserService implements UserDetailsService {
     }
 
     public User createUser(User user) {
-
+        // Controllo che i campi non siano null o vuoti
+        if (user.getUsername() == null || user.getUsername().trim().isEmpty()) {
+            throw new IllegalArgumentException("Username is required");
+        }
+        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        // Controlla se lo username esiste già
         if (userRepository.findByUsername(user.getUsername()) != null) {
-            throw new UsernameAlreadyExistsException("Username"+ user.getUsername() +" already exists");
+            throw new UsernameAlreadyExistsException("Username " + user.getUsername() + " already exists");
         }
 
+        // Codifica la password
         user.setPassword(SecurityConfig.encodePassword(user.getPassword()));
+
+        // Salva l'utente nel repository
         return userRepository.save(user);
     }
+
 
     public User getUser(String username) {
         return userRepository.findByUsername(username);

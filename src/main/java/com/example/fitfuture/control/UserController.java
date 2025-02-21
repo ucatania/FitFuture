@@ -3,6 +3,7 @@ package com.example.fitfuture.control;
 import com.example.fitfuture.dto.LoginRequest;
 import com.example.fitfuture.dto.UserDto;
 import com.example.fitfuture.entity.User;
+import com.example.fitfuture.exceptions.UsernameAlreadyExistsException;
 import com.example.fitfuture.services.UserService;
 import com.example.fitfuture.security.SecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,13 +69,26 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserDto userDto) {
         try {
+            // Creazione dell'oggetto User
             User user = new User(userDto.getUsername(), userDto.getPassword(), userDto.getEmail(), userDto.getRole());
+
+            // Creazione dell'utente nel database
             User createdUser = userService.createUser(user);
+
+            // Se tutto va bene, restituisce l'utente creato
             return ResponseEntity.ok(createdUser);
+        } catch (IllegalArgumentException e) {
+            // Se manca un campo obbligatorio, restituisce un errore 400 con il messaggio dell'eccezione
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (UsernameAlreadyExistsException e) {
+            // Se lo username è già esistente, restituisce un errore 409 (CONFLICT)
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already exists: " + userDto.getUsername());
+            // Gestione generica per eventuali altri errori imprevisti
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Errore interno del server");
         }
     }
+
 
     @PutMapping("/changeEmail")
     public ResponseEntity<User> changeEmail(@RequestBody Map<String, String> request) {
