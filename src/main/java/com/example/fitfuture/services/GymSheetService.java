@@ -25,6 +25,10 @@ public class GymSheetService {
     }
 
     public void addGymSheet(GymSheetDto gymSheetDto) {
+        if (gymSheetDto.getExerciseIds() == null || gymSheetDto.getExerciseIds().isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "La lista degli esercizi non può essere nulla o vuota");
+        }
+
         Optional<User> athleteOpt = userRepository.findById(gymSheetDto.getAthleteId());
         if (athleteOpt.isEmpty() || !athleteOpt.get().getRole().equals(User.Role.ATLETA)) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Atleta non trovato o ruolo non valido");
