@@ -65,13 +65,31 @@ public class GymSheetServiceTest {
 
     @Test
     void addGymSheet_shouldThrowException_whenAthleteNotFound() {
-        GymSheetDto gymSheetDto = new GymSheetDto("athleteId", null, Collections.emptyList());
+        GymSheetDto gymSheetDto = new GymSheetDto("athleteId", null, Arrays.asList("exerciseId1"));
 
         when(userRepository.findById("athleteId")).thenReturn(Optional.empty());
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> gymSheetService.addGymSheet(gymSheetDto));
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
         assertEquals("Atleta non trovato o ruolo non valido", exception.getReason());
+    }
+
+    @Test
+    void addGymSheet_shouldThrowException_whenExerciseListIsNull() {
+        GymSheetDto gymSheetDto = new GymSheetDto("athleteId", null, null);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> gymSheetService.addGymSheet(gymSheetDto));
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
+        assertEquals("La lista degli esercizi non può essere nulla o vuota", exception.getReason());
+    }
+
+    @Test
+    void addGymSheet_shouldThrowException_whenExerciseListIsEmpty() {
+        GymSheetDto gymSheetDto = new GymSheetDto("athleteId", null, Collections.emptyList());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> gymSheetService.addGymSheet(gymSheetDto));
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
+        assertEquals("La lista degli esercizi non può essere nulla o vuota", exception.getReason());
     }
 
     @Test
